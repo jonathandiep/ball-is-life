@@ -8,6 +8,7 @@
   "dependencies": {
     "bootstrap": "4.0.0-alpha.5",
     "express": "^4.14.0",
+    "lodash": "^4.17.4",
     "nba": "^3.2.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
