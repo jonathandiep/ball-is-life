@@ -1,20 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import App from './components/App';
-import Home from './components/Home';
 import Team from './components/Team';
-import Player from './components/Player';
+import reducers from './reducers';
+
+import Home from './containers/Home';
+import Player from './containers/Player';
+
+// const createStoreWithMiddleware = applyMiddleware()(createStore);
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducers, composeEnhancers(
+  applyMiddleware()
+));
 
 ReactDOM.render(
-  <Router history={browserHistory}>
-    <Route path="/" component={App}>
-      <IndexRoute component={Home} />
-      <Route path="/team" component={Team} />
-      <Route path="/player/:playerId" component={Player} />
-    </Route>
-  </Router>,
-  //<App />,
+  <Provider store={store}>
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Home} />
+        <Route path="/team" component={Team} />
+        <Route path="/player/:playerId" component={Player} />
+      </Route>
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
