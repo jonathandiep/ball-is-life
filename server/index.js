@@ -2,6 +2,11 @@ const express = require('express');
 const app = express();
 const nba = require('nba');
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 /**
  * Endpoint to grab individual player's details
  */
@@ -12,6 +17,10 @@ app.get('/player-details/:id', (req, res) => {
       console.error(err);
       res.sendStatus(404);
     });
+});
+
+app.get('/hello', (req, res) => {
+  res.send('hello');
 });
 
 /**

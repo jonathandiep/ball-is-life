@@ -26,7 +26,7 @@ class Home extends Component {
   onChange(event) {
     this.setState({ term: event.target.value });
 
-    if (event.target.value === '') {
+    if (event.target.value === '' && this.state.results !== []) {
       console.log(`clear state results`);
       this.setState({ results: [] });
     }

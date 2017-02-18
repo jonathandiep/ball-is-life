@@ -3,11 +3,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { selectPlayer, getPlayerDetails, getPlayerShots } from '../actions';
+import { selectPlayer, getPlayerDetails, getPlayerShots, resetPlayer } from '../actions';
+import { PlayerDetail } from '../components/PlayerDetail';
+import { CourtHeatmap } from '../components/CourtHeatmap';
 
-/**
- * TODO: If user goes directly to this URL, figure out a way to get player data and then add to redux
- */
 class Player extends Component {
   constructor(props) {
     super(props);
@@ -23,6 +22,8 @@ class Player extends Component {
 
       this.props.selectPlayer(player[0]);
     }
+
+    this.state = { loading: true };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -37,35 +38,40 @@ class Player extends Component {
     let details = axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`)
     let shots = axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`)
 
+    /**
+     * TODO: Use Observables instead of promises to allow cancel (because data takes too long to load)
+     * then have subscriptions be unsubscribed at componentWillUnmount()
+     */
+    // Get basketball player's data and send to reducers
     Promise.all([details, shots])
       .then(res => {
-        console.log(res[0].data);
-        console.log(res[1].data);
-        this.props.getPlayerDetails(res[0].data);
+        this.props.getPlayerDetails(res[0].data.commonPlayerInfo[0]);
         this.props.getPlayerShots(res[1].data);
+        this.setState({ loading: false });
       })
       .catch(err => console.error(err));
   }
 
+  componentWillUnmount() {
+    // redux action to reset current player
+    this.props.resetPlayer();
+  }
+
   render() {
-    if (this.props.player) {
+    if (Object.keys(this.props.player).length === 0 && this.props.player.constructor === Object && this.state.loading) {
+      return <div>Loading</div>
+    } else {
       return (
-        <div className="card">
-          <h3 className="card-header">{this.props.player.firstName} {this.props.player.lastName}</h3>
-          <div className="card-block">
-            <h4 className="card-title">Special title treatment</h4>
-            <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" className="btn btn-primary">Go somewhere</a>
+        <div className="container">
+          <div className="row">
+            <PlayerDetail player={this.props.player} />
+            <CourtHeatmap />
           </div>
         </div>
       )
     }
 
-    return <div>Loading</div>
   } 
-
-
-
 }
 
 function mapStateToProps(state) {
@@ -79,7 +85,8 @@ function mapDispatchToProps(dispatch) {
     {
       selectPlayer,
       getPlayerDetails,
-      getPlayerShots
+      getPlayerShots,
+      resetPlayer
     },
     dispatch
   )

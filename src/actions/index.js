@@ -5,6 +5,7 @@ export const RETRIEVE_PLAYERS = 'RETRIEVE_PLAYERS';
 export const SELECT_PLAYER = 'SELECT_PLAYER';
 export const GET_PLAYER_DETAILS = 'GET_PLAYER_DETAILS';
 export const GET_PLAYER_SHOTS = 'GET_PLAYER_SHOTS';
+export const RESET_PLAYER = 'RESET_PLAYER';
 
 // Actions used to manage team
 export const ADD_PLAYER = 'ADD_PLAYER';
@@ -34,6 +35,12 @@ export function getPlayerShots(data) {
   return {
     type: GET_PLAYER_SHOTS,
     payload: data
+  }
+}
+
+export function resetPlayer() {
+  return {
+    type: RESET_PLAYER
   }
 }
 

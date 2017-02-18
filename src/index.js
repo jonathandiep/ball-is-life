@@ -11,8 +11,6 @@ import reducers from './reducers';
 import Home from './containers/Home';
 import Player from './containers/Player';
 
-// const createStoreWithMiddleware = applyMiddleware()(createStore);
-
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(
   applyMiddleware()
