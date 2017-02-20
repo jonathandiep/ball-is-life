@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Observable } from 'rxjs';
 import axios from 'axios';
 
-import { selectPlayer, getPlayerDetails, getPlayerShots, resetPlayer } from '../actions';
+import {
+  selectPlayer,
+  getPlayerDetails,
+  getPlayerShots,
+  resetPlayer,
+  addPlayer,
+} from '../redux/actions';
 import { PlayerDetail } from '../components/PlayerDetail';
 import { CourtHeatmap } from '../components/CourtHeatmap';
 
@@ -23,7 +30,10 @@ class Player extends Component {
       this.props.selectPlayer(player[0]);
     }
 
-    this.state = { loading: true };
+    this.state = {
+      loading: true,
+      subscription: [],
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -31,40 +41,51 @@ class Player extends Component {
       return true;
     }
 
+    if (this.state.loading !== nextState.loading) {
+      return true;
+    }
+
     return false;
   }
 
   componentDidMount() {
-    let details = axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`)
-    let shots = axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`)
+    let details = Observable.fromPromise(
+      axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`)
+    );
+    let shots = Observable.fromPromise(
+      axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`)
+    );
 
-    /**
-     * TODO: Use Observables instead of promises to allow cancel (because data takes too long to load)
-     * then have subscriptions be unsubscribed at componentWillUnmount()
-     */
-    // Get basketball player's data and send to reducers
-    Promise.all([details, shots])
-      .then(res => {
-        this.props.getPlayerDetails(res[0].data.commonPlayerInfo[0]);
-        this.props.getPlayerShots(res[1].data);
-        this.setState({ loading: false });
-      })
-      .catch(err => console.error(err));
+    let source = Observable.merge(details, shots)
+
+    let subscription = source.subscribe((res) => {
+      console.log(res.data);
+      if (res.data.commonPlayerInfo) {
+        this.props.getPlayerDetails(res.data.commonPlayerInfo[0]);
+      } else {
+        this.props.getPlayerShots(res.data);
+      }
+    }, (err) => {
+      console.error(err);
+    }, () => this.setState({ loading: false }));
+
+    this.setState({ subscription });
   }
 
   componentWillUnmount() {
     // redux action to reset current player
     this.props.resetPlayer();
+    this.state.subscription.unsubscribe();
   }
 
   render() {
-    if (Object.keys(this.props.player).length === 0 && this.props.player.constructor === Object && this.state.loading) {
+    if (this.state.loading) {
       return <div>Loading</div>
     } else {
       return (
         <div className="container">
           <div className="row">
-            <PlayerDetail player={this.props.player} />
+            <PlayerDetail player={this.props.player} addPlayer={this.props.addPlayer} />
             <CourtHeatmap />
           </div>
         </div>
@@ -86,7 +107,8 @@ function mapDispatchToProps(dispatch) {
       selectPlayer,
       getPlayerDetails,
       getPlayerShots,
-      resetPlayer
+      resetPlayer,
+      addPlayer,
     },
     dispatch
   )

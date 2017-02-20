@@ -3522,9 +3522,17 @@ lodash.isarray@~2.4.1:
   dependencies:
     lodash._isnative "~2.4.1"
 
+lodash.isfunction@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-3.0.8.tgz#4db709fc81bc4a8fd7127a458a5346c5cdce2c6b"
+
 lodash.isfunction@~2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-2.4.1.tgz#2cfd575c73e498ab57e319b77fa02adef13a94d1"
+
+lodash.isobject@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/lodash.isobject/-/lodash.isobject-3.0.2.tgz#3c8fb8d5b5bf4bf90ae06e14f2a530a4ed935e1d"
 
 lodash.isobject@~2.4.1:
   version "2.4.1"
@@ -3570,6 +3578,10 @@ lodash.mapkeys@^3.8.0:
     lodash._basecallback "^3.0.0"
     lodash._basefor "^3.0.0"
     lodash.keys "^3.0.0"
+
+lodash.merge@^4.3.1:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
 
 lodash.noop@~2.4.1:
   version "2.4.1"
@@ -4694,6 +4706,16 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
+reduce-reducers@^0.1.0:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/reduce-reducers/-/reduce-reducers-0.1.2.tgz#fa1b4718bc5292a71ddd1e5d839c9bea9770f14b"
+
+redux-actions@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/redux-actions/-/redux-actions-0.10.1.tgz#bb442ee37dd9643a94933e4071e089f435587135"
+  dependencies:
+    reduce-reducers "^0.1.0"
+
 redux-devtools-instrument@^1.0.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/redux-devtools-instrument/-/redux-devtools-instrument-1.6.0.tgz#a16678a6c3338db10cd5e0b8801e294c52466eb8"
@@ -4709,6 +4731,27 @@ redux-devtools@^3.3.1:
     react-redux "^4.0.0"
     redux "^3.5.2"
     redux-devtools-instrument "^1.0.1"
+
+redux-storage-engine-localstorage@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/redux-storage-engine-localstorage/-/redux-storage-engine-localstorage-1.1.4.tgz#2849278d78970f0c3f5f3d4727caa3c30783ed49"
+
+redux-storage-merger-simple@^1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/redux-storage-merger-simple/-/redux-storage-merger-simple-1.0.5.tgz#29a2886b0e770d9b70811aca800aa8efae89fb73"
+  dependencies:
+    lodash.isobject "^3.0.2"
+    lodash.merge "^4.3.1"
+
+redux-storage@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/redux-storage/-/redux-storage-4.1.2.tgz#e06f4bdeee262aead9132fc9f7eadc67e9f9bea2"
+  dependencies:
+    lodash.isfunction "^3.0.8"
+    lodash.isobject "^3.0.2"
+    loose-envify "^1.2.0"
+    redux-actions "^0.10.1"
+    redux-storage-merger-simple "^1.0.2"
 
 redux@^3.5.2, redux@^3.6.0:
   version "3.6.0"

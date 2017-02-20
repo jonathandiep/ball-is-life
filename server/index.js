@@ -19,10 +19,6 @@ app.get('/player-details/:id', (req, res) => {
     });
 });
 
-app.get('/hello', (req, res) => {
-  res.send('hello');
-});
-
 /**
  * Endpoint to grab a team's stats
  * leagueAverages property is something to pay attention to

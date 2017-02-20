@@ -1,6 +1,6 @@
-const players = require('nba/data/players.json');
-
 import { RETRIEVE_PLAYERS } from '../actions';
+
+const players = require('nba/data/players.json');
 
 export default function(state = [], action) {
   switch (action.type) {

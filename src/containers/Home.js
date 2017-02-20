@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { selectPlayer, retrievePlayers } from '../actions';
+
+import { selectPlayer, retrievePlayers } from '../redux/actions';
 
 // import * as _ from 'lodash';
 
@@ -27,7 +28,6 @@ class Home extends Component {
     this.setState({ term: event.target.value });
 
     if (event.target.value === '' && this.state.results !== []) {
-      console.log(`clear state results`);
       this.setState({ results: [] });
     }
 
@@ -46,7 +46,9 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    this.props.retrievePlayers();
+    if (this.props.players.length === 0) {
+      this.props.retrievePlayers();
+    }
   }
 
   render() {
