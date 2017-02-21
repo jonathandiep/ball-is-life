@@ -1,11 +1,15 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Observable } from 'rxjs';
+import * as _ from 'lodash';
+import axios from 'axios';
 
-import { selectPlayer, retrievePlayers } from '../redux/actions';
+import { selectPlayer, retrievePlayers, retrievePlayersStorage } from '../redux/actions';
 
-// import * as _ from 'lodash';
 
 class Home extends Component {
   constructor(props) {
@@ -41,20 +45,29 @@ class Home extends Component {
         })
       });
     } else {
-      this.setState({ results: [] });
+      this.setState({
+        results: [],
+        subscription: []
+      });
     }
   }
 
+  // Make a call to retrieve player data if it doesn't exist in redux store or localStorage
   componentWillMount() {
-    if (this.props.players.length === 0) {
-      this.props.retrievePlayers();
+    if (this.props.players.length === 0 && _.isEmpty(localStorage.getItem('reduxPersist:players'))) {
+      let players = Observable.fromPromise(axios.get('http://localhost:3333/players'));
+      let subscription = players.subscribe((res) => {
+        this.props.retrievePlayers(res.data);
+      }, err => console.error(err));
+
+      this.setState({ subscription });
     }
   }
 
   render() {
     let playersList = this.state.results.map(player => 
       <div key={player.playerId} onClick={() => this.props.selectPlayer(player)}>
-        <Link to={`/player/${player.playerId}`}><li>{player.firstName} {player.lastName}</li></Link>
+        <Link to={`/player/${player.playerId}`}><li>{player.fullName}</li></Link>
       </div>
     );
 
@@ -77,6 +90,12 @@ class Home extends Component {
       </div>
     )
   }
+
+  componentWillUnmount() {
+    if (!_.isEmpty(this.state.subscription)) {
+      this.state.subscription.unsubscribe();
+    }
+  }
 }
 
 function mapStateToProps(state) {
@@ -90,6 +109,7 @@ function mapDispatchToProps(dispatch) {
     {
       selectPlayer,
       retrievePlayers,
+      retrievePlayersStorage,
     },
     dispatch
   );

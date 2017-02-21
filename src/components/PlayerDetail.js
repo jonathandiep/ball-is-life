@@ -12,6 +12,7 @@ export const PlayerDetail = (props) => {
           <p className="card-text">Position: {props.player.position}</p>
           <p className="card-text">Height: {props.player.height}</p>
           <p className="card-text">Weight: {props.player.weight} lbs.</p>
+          {/*props.button*/}
           <button onClick={() => props.addPlayer(props.player)} className="btn btn-primary">Add to Team</button>
         </div>
       </div>

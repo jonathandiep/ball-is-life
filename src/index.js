@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
-
+import { persistStore, autoRehydrate } from 'redux-persist';
+// import localForage from 'localforage';
+ 
 import App from './components/App';
 import reducers from './redux/reducers';
 
@@ -13,8 +15,12 @@ import Team from './containers/Team';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(
-  applyMiddleware()
+  applyMiddleware(),
+  autoRehydrate()
 ));
+
+// persistStore(store, { storage: localForage });
+persistStore(store);
 
 ReactDOM.render(
   <Provider store={store}>

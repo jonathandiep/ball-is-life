@@ -3,13 +3,16 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
 import axios from 'axios';
+import * as _ from 'lodash';
 
 import {
   selectPlayer,
   getPlayerDetails,
   getPlayerShots,
-  resetPlayer,
+  resetActivePlayer,
   addPlayer,
+  deletePlayer,
+  retrievePlayerStorage,
 } from '../redux/actions';
 import { PlayerDetail } from '../components/PlayerDetail';
 import { CourtHeatmap } from '../components/CourtHeatmap';
@@ -48,40 +51,91 @@ class Player extends Component {
     return false;
   }
 
-  componentDidMount() {
-    let details = Observable.fromPromise(
-      axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`)
-    );
-    let shots = Observable.fromPromise(
-      axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`)
-    );
-
-    let source = Observable.merge(details, shots)
-
-    let subscription = source.subscribe((res) => {
-      console.log(res.data);
-      if (res.data.commonPlayerInfo) {
-        this.props.getPlayerDetails(res.data.commonPlayerInfo[0]);
-      } else {
-        this.props.getPlayerShots(res.data);
+  /**
+   * TODO: personId gets into the data instead of playerId
+   */
+  componentWillMount() {
+    let player = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
+    console.log(player);
+    if (!_.isEmpty(player)) {
+      console.log(player.playerId);
+      console.log(player.personId);
+      if (player.playerId === Number(this.props.params.playerId)) {
+        console.log(Number(this.props.params.playerId));
+        this.props.retrievePlayerStorage(player);
+        this.setState({ loading: false });
       }
-    }, (err) => {
-      console.error(err);
-    }, () => this.setState({ loading: false }));
+    } else {
+      player = JSON.parse(localStorage.getItem('reduxPersist:team')).filter((player) => {
+        if (player.playerId === Number(this.props.params.playerId)) {
+          return player;
+        }
+      });
+      console.log(player);
 
-    this.setState({ subscription });
+      if (player.length > 0) {
+        this.props.retrievePlayerStorage(player);
+        this.setState({ loading: false });
+      }
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.loading) {
+      let details = Observable.fromPromise(
+        axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`)
+      );
+      let shots = Observable.fromPromise(
+        axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`)
+      );
+
+      let source = Observable.merge(details, shots)
+
+      let subscription = source.subscribe((res) => {
+        console.log(res.data);
+        if (res.data.commonPlayerInfo) {
+          this.props.getPlayerDetails(res.data.commonPlayerInfo[0]);
+        } else {
+          this.props.getPlayerShots(res.data);
+        }
+      }, (err) => {
+        console.error(err);
+      }, () => this.setState({ loading: false }));
+
+      this.setState({ subscription });
+    }
   }
 
   componentWillUnmount() {
     // redux action to reset current player
-    this.props.resetPlayer();
-    this.state.subscription.unsubscribe();
+    this.props.resetActivePlayer();
+    if (!_.isEmpty(this.state.subscription)) {
+      this.state.subscription.unsubscribe();
+    }
   }
 
   render() {
     if (this.state.loading) {
       return <div>Loading</div>
     } else {
+      /*
+      let button;
+
+      let playerInTeam = this.props.team.filter((player) => {
+        if (player.playerId === Number(this.props.params)) {
+          return player;
+        }
+      })
+
+      if (playerInTeam.length > 0) {
+        button = <button onClick={() => this.props.deletePlayer(this.props.player.playerId)} className="btn btn-danger">Delete</button>;
+      } else {
+        button = (
+          <button onClick={() => this.props.addPlayer(this.props.player)} className="btn btn-primary">Add to Team</button>
+        )
+      }
+      */
+
       return (
         <div className="container">
           <div className="row">
@@ -97,7 +151,8 @@ class Player extends Component {
 
 function mapStateToProps(state) {
   return {
-    player: state.activePlayer
+    player: state.activePlayer,
+    team: state.team,
   }
 }
 
@@ -107,8 +162,10 @@ function mapDispatchToProps(dispatch) {
       selectPlayer,
       getPlayerDetails,
       getPlayerShots,
-      resetPlayer,
+      resetActivePlayer,
       addPlayer,
+      deletePlayer,
+      retrievePlayerStorage,
     },
     dispatch
   )

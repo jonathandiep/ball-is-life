@@ -8,6 +8,14 @@ app.use((req, res, next) => {
 });
 
 /**
+ * Endpoint to get all basketball players
+ */
+app.get('/players', (req, res) => {
+  const players = require('nba/data/players.json');
+  res.json(players);
+});
+
+/**
  * Endpoint to grab individual player's details
  */
 app.get('/player-details/:id', (req, res) => {
@@ -20,8 +28,7 @@ app.get('/player-details/:id', (req, res) => {
 });
 
 /**
- * Endpoint to grab a team's stats
- * leagueAverages property is something to pay attention to
+ * Endpoint to grab a player's shooting stats
  */
 app.get('/player-shots/:id', (req, res) => {
   nba.stats.shots({ PlayerID : req.params.id })

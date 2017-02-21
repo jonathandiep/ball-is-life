@@ -1,19 +1,31 @@
 // Action used to retrieve list of players (for dropdown)
 export const RETRIEVE_PLAYERS = 'RETRIEVE_PLAYERS';
+export const RETRIEVE_PLAYERS_STORAGE = 'RETRIEVE_PLAYERS_STORAGE';
 
 // Actions used for a player detail
 export const SELECT_PLAYER = 'SELECT_PLAYER';
 export const GET_PLAYER_DETAILS = 'GET_PLAYER_DETAILS';
 export const GET_PLAYER_SHOTS = 'GET_PLAYER_SHOTS';
-export const RESET_PLAYER = 'RESET_PLAYER';
+export const RESET_ACTIVE_PLAYER = 'RESET_ACTIVE_PLAYER';
+export const RETRIEVE_PLAYER_STORAGE = 'RETRIEVE_PLAYER_STORAGE';
 
 // Actions used to manage team
 export const ADD_PLAYER = 'ADD_PLAYER';
 export const DELETE_PLAYER = 'DELETE_PLAYER';
 
-export function retrievePlayers() {
+// Gets player data from json file (will later be extracted to backend)
+export function retrievePlayers(players) {
   return {
-    type: RETRIEVE_PLAYERS
+    type: RETRIEVE_PLAYERS,
+    payload: players
+  }
+}
+
+// Gets play data from localStorage if it exists
+export function retrievePlayersStorage(players) {
+  return {
+    type: RETRIEVE_PLAYERS_STORAGE,
+    payload: players
   }
 }
 
@@ -38,9 +50,16 @@ export function getPlayerShots(data) {
   }
 }
 
-export function resetPlayer() {
+export function resetActivePlayer() {
   return {
-    type: RESET_PLAYER
+    type: RESET_ACTIVE_PLAYER
+  }
+}
+
+export function retrievePlayerStorage(player) {
+  return {
+    type: RETRIEVE_PLAYER_STORAGE,
+    payload: player
   }
 }
 
