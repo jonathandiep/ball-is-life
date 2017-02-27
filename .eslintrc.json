@@ -17,8 +17,21 @@
     "no-undef": "warn",
     "no-unreachable": "warn",
     "no-unused-vars": "warn",
+    "no-console": "off",
     "constructor-super": "warn",
-    "valid-typeof": "warn"
+    "valid-typeof": "warn",
+    "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": "off",
+    "react/prop-types": "warn",
+    "array-callback-return": "off",
+    "consistent-return": "off",
+    "class-methods-use-this": "off",
+    "no-shadow": "warn",
+    "react/forbid-prop-types": "off",
+    "react/require-default-props": "off"
   },
-  "extends": "react-app"
+  "extends": [
+    "react-app",
+    "airbnb"
+  ]
 }

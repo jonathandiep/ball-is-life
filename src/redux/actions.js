@@ -17,62 +17,62 @@ export const DELETE_PLAYER = 'DELETE_PLAYER';
 export function retrievePlayers(players) {
   return {
     type: RETRIEVE_PLAYERS,
-    payload: players
-  }
+    payload: players,
+  };
 }
 
 // Gets play data from localStorage if it exists
 export function retrievePlayersStorage(players) {
   return {
     type: RETRIEVE_PLAYERS_STORAGE,
-    payload: players
-  }
+    payload: players,
+  };
 }
 
 export function selectPlayer(player) {
   return {
     type: SELECT_PLAYER,
-    payload: player
-  }
+    payload: player,
+  };
 }
 
 export function getPlayerDetails(data) {
   return {
     type: GET_PLAYER_DETAILS,
-    payload: data
-  }
+    payload: data,
+  };
 }
 
 export function getPlayerShots(data) {
   return {
     type: GET_PLAYER_SHOTS,
-    payload: data
-  }
+    payload: data,
+  };
 }
 
 export function resetActivePlayer() {
   return {
-    type: RESET_ACTIVE_PLAYER
-  }
+    type: RESET_ACTIVE_PLAYER,
+  };
 }
 
 export function retrievePlayerStorage(player) {
   return {
     type: RETRIEVE_PLAYER_STORAGE,
-    payload: player
-  }
+    payload: player,
+  };
 }
 
 export function addPlayer(player) {
   return {
     type: ADD_PLAYER,
-    payload: player
-  }
+    payload: player,
+  };
 }
 
 export function deletePlayer(player) {
   return {
     type: DELETE_PLAYER,
-    payload: player
-  }
+    payload: player,
+  };
 }

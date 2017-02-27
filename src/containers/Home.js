@@ -24,9 +24,10 @@ class Home extends Component {
 
   }
 
-  // the term state should affect what values (names) should appear in the dropdown
+
   /**
    * TODO: Debounce so app doesn't have to make call every change (but make it 500ms or so)
+   * Also the search sucks - so make it better
    */
   onChange(event) {
     this.setState({ term: event.target.value });
@@ -78,7 +79,7 @@ class Home extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="Search a player... (Capitalization matters)"
+              placeholder="Search a player..."
               onChange={this.onChange} />
             <div>
               <ul>

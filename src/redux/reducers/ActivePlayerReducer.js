@@ -9,7 +9,7 @@ import {
 /**
  * TODO: add player details and player shots to current player
  */
-export default function(state = {}, action) {
+export default function (state = {}, action) {
   switch (action.type) {
     case SELECT_PLAYER:
     case RETRIEVE_PLAYER_STORAGE:

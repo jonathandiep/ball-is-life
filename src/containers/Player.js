@@ -14,17 +14,36 @@ import {
   deletePlayer,
   retrievePlayerStorage,
 } from '../redux/actions';
-import { PlayerDetail } from '../components/PlayerDetail';
+import PlayerDetail from '../components/PlayerDetail';
 import { CourtHeatmap } from '../components/CourtHeatmap';
 
+const players = require('nba/data/players.json');
+
 class Player extends Component {
+  static propTypes = {
+    player: React.PropTypes.object.isRequired,
+    params: React.PropTypes.object.isRequired,
+    addPlayer: React.PropTypes.func,
+    deletePlayer: React.PropTypes.func,
+    selectPlayer: React.PropTypes.func,
+    getPlayerDetails: React.PropTypes.func,
+    getPlayerShots: React.PropTypes.func,
+    resetActivePlayer: React.PropTypes.func,
+    retrievePlayerStorage: React.PropTypes.func,
+  }
+
+  static defaultProps = {
+    player: {},
+    params: {
+      playerId: 0,
+    },
+  }
+
   constructor(props) {
     super(props);
 
     if (this.props.player === null) {
-      const players = require('nba/data/players.json');
-      
-      let player = players.filter((player) => {
+      const player = players.filter((player) => {
         if (Number(player.playerId) === Number(this.props.params.playerId)) {
           return player;
         }
@@ -36,7 +55,66 @@ class Player extends Component {
     this.state = {
       loading: true,
       subscription: [],
+      playerInTeam: [],
     };
+  }
+
+  componentWillMount() {
+    let player = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
+    if (!_.isEmpty(player)) {
+      if (player.personId === Number(this.props.params.playerId)) {
+        this.props.retrievePlayerStorage(player);
+        this.setState({ loading: false });
+      }
+    } else {
+      player = JSON.parse(localStorage.getItem('reduxPersist:team')).filter((player) => {
+        if (player.playerId === Number(this.props.params.playerId)) {
+          return player;
+        }
+      });
+
+      if (player.length > 0) {
+        this.props.retrievePlayerStorage(player[0]);
+        this.setState({ loading: false });
+      }
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.loading) {
+      const details = Observable.fromPromise(
+        axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`),
+      );
+      const shots = Observable.fromPromise(
+        axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`),
+      );
+
+      const source = Observable.merge(details, shots);
+
+      const subscription = source.subscribe((res) => {
+        console.log(res.data);
+        if (res.data.commonPlayerInfo) {
+          this.props.getPlayerDetails(res.data.commonPlayerInfo[0]);
+        } else {
+          this.props.getPlayerShots(res.data);
+        }
+      }, (err) => {
+        console.error(err);
+      }, () => this.setState({ loading: false }));
+
+      /* eslint-disable react/no-did-mount-set-state*/
+      this.setState({ subscription });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const playerInTeam = nextProps.team.filter((player) => {
+      if (player.personId === Number(this.props.params.playerId)) {
+        return player;
+      }
+    });
+
+    this.setState({ playerInTeam });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -48,62 +126,11 @@ class Player extends Component {
       return true;
     }
 
+    if (this.state.playerInTeam !== nextState.playerInTeam) {
+      return true;
+    }
+
     return false;
-  }
-
-  /**
-   * TODO: personId gets into the data instead of playerId
-   */
-  componentWillMount() {
-    let player = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
-    console.log(player);
-    if (!_.isEmpty(player)) {
-      console.log(player.playerId);
-      console.log(player.personId);
-      if (player.playerId === Number(this.props.params.playerId)) {
-        console.log(Number(this.props.params.playerId));
-        this.props.retrievePlayerStorage(player);
-        this.setState({ loading: false });
-      }
-    } else {
-      player = JSON.parse(localStorage.getItem('reduxPersist:team')).filter((player) => {
-        if (player.playerId === Number(this.props.params.playerId)) {
-          return player;
-        }
-      });
-      console.log(player);
-
-      if (player.length > 0) {
-        this.props.retrievePlayerStorage(player);
-        this.setState({ loading: false });
-      }
-    }
-  }
-
-  componentDidMount() {
-    if (this.state.loading) {
-      let details = Observable.fromPromise(
-        axios.get(`http://localhost:3333/player-details/${this.props.params.playerId}`)
-      );
-      let shots = Observable.fromPromise(
-        axios.get(`http://localhost:3333/player-shots/${this.props.params.playerId}`)
-      );
-
-      let source = Observable.merge(details, shots)
-
-      let subscription = source.subscribe((res) => {
-        console.log(res.data);
-        if (res.data.commonPlayerInfo) {
-          this.props.getPlayerDetails(res.data.commonPlayerInfo[0]);
-        } else {
-          this.props.getPlayerShots(res.data);
-        }
-      }, (err) => {
-        console.error(err);
-      }, () => this.setState({ loading: false }));
-
-      this.setState({ subscription });
-    }
   }
 
   componentWillUnmount() {
@@ -116,44 +143,35 @@ class Player extends Component {
 
   render() {
     if (this.state.loading) {
-      return <div>Loading</div>
-    } else {
-      /*
-      let button;
-
-      let playerInTeam = this.props.team.filter((player) => {
-        if (player.playerId === Number(this.props.params)) {
-          return player;
-        }
-      })
-
-      if (playerInTeam.length > 0) {
-        button = <button onClick={() => this.props.deletePlayer(this.props.player.playerId)} className="btn btn-danger">Delete</button>;
-      } else {
-        button = (
-          <button onClick={() => this.props.addPlayer(this.props.player)} className="btn btn-primary">Add to Team</button>
-        )
-      }
-      */
-
-      return (
-        <div className="container">
-          <div className="row">
-            <PlayerDetail player={this.props.player} addPlayer={this.props.addPlayer} />
-            <CourtHeatmap />
-          </div>
-        </div>
-      )
+      return <div>Loading</div>;
     }
 
-  } 
+    let button;
+
+    if (this.state.playerInTeam.length > 0) {
+      button = <button onClick={() => this.props.deletePlayer(this.props.player.playerId)} className="btn btn-danger">Delete</button>;
+    } else {
+      button = (
+        <button onClick={() => this.props.addPlayer(this.props.player)} className="btn btn-primary">Add to Team</button>
+      );
+    }
+
+    return (
+      <div className="container">
+        <div className="row">
+          <PlayerDetail player={this.props.player} button={button} />
+          <CourtHeatmap />
+        </div>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
   return {
     player: state.activePlayer,
     team: state.team,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -167,8 +185,8 @@ function mapDispatchToProps(dispatch) {
       deletePlayer,
       retrievePlayerStorage,
     },
-    dispatch
-  )
+    dispatch,
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Player);

@@ -1,3 +1,7 @@
 {
-  "eslint.enable": true
+  "eslint.enable": true,
+  "vsicons.presets.angular": false,
+  "files.associations": {
+    "*.js": "javascriptreact"
+  }
 }
