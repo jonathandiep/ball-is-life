@@ -28,7 +28,8 @@
     "class-methods-use-this": "off",
     "no-shadow": "warn",
     "react/forbid-prop-types": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "max-len": "warn"
   },
   "extends": [
     "react-app",

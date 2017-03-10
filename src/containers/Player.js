@@ -43,9 +43,9 @@ class Player extends Component {
     super(props);
 
     if (this.props.player === null) {
-      const player = players.filter((player) => {
-        if (Number(player.playerId) === Number(this.props.params.playerId)) {
-          return player;
+      const player = players.filter((filteredPlayer) => {
+        if (Number(filteredPlayer.playerId) === Number(this.props.params.playerId)) {
+          return filteredPlayer;
         }
       });
 
@@ -57,24 +57,26 @@ class Player extends Component {
       subscription: [],
       playerInTeam: [],
     };
+
+    this.sortShotsToGames = this.sortShotsToGames.bind(this);
   }
 
   componentWillMount() {
-    let player = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
-    if (!_.isEmpty(player)) {
-      if (player.personId === Number(this.props.params.playerId)) {
-        this.props.retrievePlayerStorage(player);
+    let activePlayer = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
+    if (!_.isEmpty(activePlayer)) {
+      if (activePlayer.personId === Number(this.props.params.playerId)) {
+        this.props.retrievePlayerStorage(activePlayer);
         this.setState({ loading: false });
       }
-    } else {
-      player = JSON.parse(localStorage.getItem('reduxPersist:team')).filter((player) => {
+    } else if (localStorage.getItem('reduxPersist:team')) {
+      activePlayer = JSON.parse(localStorage.getItem('reduxPersist:team')).filter((player) => {
         if (player.playerId === Number(this.props.params.playerId)) {
           return player;
         }
       });
 
-      if (player.length > 0) {
-        this.props.retrievePlayerStorage(player[0]);
+      if (activePlayer.length > 0) {
+        this.props.retrievePlayerStorage(activePlayer[0]);
         this.setState({ loading: false });
       }
     }
@@ -118,15 +120,15 @@ class Player extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.playerInTeam !== nextState.playerInTeam) {
+      return true;
+    }
+
     if (this.props.player !== nextProps.player) {
       return true;
     }
 
     if (this.state.loading !== nextState.loading) {
-      return true;
-    }
-
-    if (this.state.playerInTeam !== nextState.playerInTeam) {
       return true;
     }
 
@@ -141,12 +143,46 @@ class Player extends Component {
     }
   }
 
+  sortShotsToGames(shots) {
+    // modify shots here (use binary search to insert shot in the game)
+    const games = [];
+
+    shots.forEach((shot) => {
+      if (typeof games[0] === 'undefined' || games[0].gameId !== shot.gameId) {
+        games.unshift({
+          gameId: shot.gameId,
+          htm: shot.htm,
+          vtm: shot.vtm,
+          gameDate: shot.gameDate,
+          shotData: [
+            {
+              eventType: shot.eventType,
+              shotType: shot.shotType,
+              locX: shot.locX,
+              locY: shot.locY,
+            },
+          ],
+        });
+      } else {
+        games[0].shotData.push({
+          eventType: shot.eventType,
+          shotType: shot.shotType,
+          locX: shot.locX,
+          locY: shot.locY,
+        });
+      }
+    });
+
+    return games;
+  }
+
   render() {
     if (this.state.loading) {
       return <div>Loading</div>;
     }
 
     let button;
+    let games = [];
 
     if (this.state.playerInTeam.length > 0) {
       button = <button onClick={() => this.props.deletePlayer(this.props.player.playerId)} className="btn btn-danger">Delete</button>;
@@ -156,11 +192,16 @@ class Player extends Component {
       );
     }
 
+    if (this.props.player.shot_Chart_Detail) {
+      games = this.sortShotsToGames(this.props.player.shot_Chart_Detail);
+      console.log(games);
+    }
+
     return (
       <div className="container">
         <div className="row">
           <PlayerDetail player={this.props.player} button={button} />
-          <CourtHeatmap />
+          <CourtHeatmap games={games} />
         </div>
       </div>
     );

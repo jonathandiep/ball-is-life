@@ -26,8 +26,7 @@ class Home extends Component {
 
 
   /**
-   * TODO: Debounce so app doesn't have to make call every change (but make it 500ms or so)
-   * Also the search sucks - so make it better
+   * TODO: Debounce so app doesn't have to make call every change (make it 500ms or so)
    */
   onChange(event) {
     this.setState({ term: event.target.value });
@@ -39,8 +38,7 @@ class Home extends Component {
     if (event.target.value) {
       this.setState({
         results: this.props.players.filter((player) => {
-          if (player.firstName.substring(0, event.target.value.length).toLowerCase() === event.target.value.toLowerCase() ||
-          player.lastName.substring(0, event.target.value.length).toLowerCase() === event.target.value.toLowerCase()) {
+          if (player.downcaseName.includes(event.target.value.toLowerCase())) {
             return player;
           }
         })
@@ -66,7 +64,7 @@ class Home extends Component {
   }
 
   render() {
-    let playersList = this.state.results.map(player => 
+    let playersList = this.state.results.map(player =>
       <div key={player.playerId} onClick={() => this.props.selectPlayer(player)}>
         <Link to={`/player/${player.playerId}`}><li>{player.fullName}</li></Link>
       </div>

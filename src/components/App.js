@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/d3.basketball-shot-chart.css';
 
 App.propTypes = {
   children: React.PropTypes.element.isRequired,
