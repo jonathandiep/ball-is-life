@@ -158,6 +158,9 @@ class Player extends Component {
             {
               eventType: shot.eventType,
               shotType: shot.shotType,
+              period: shot.period,
+              minutesRemaining: shot.minutesRemaining,
+              secondsRemaining: shot.secondsRemaining,
               locX: shot.locX,
               locY: shot.locY,
             },
@@ -167,6 +170,9 @@ class Player extends Component {
         games[0].shotData.push({
           eventType: shot.eventType,
           shotType: shot.shotType,
+          period: shot.period,
+          minutesRemaining: shot.minutesRemaining,
+          secondsRemaining: shot.secondsRemaining,
           locX: shot.locX,
           locY: shot.locY,
         });

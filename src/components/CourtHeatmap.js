@@ -11,6 +11,14 @@ export class CourtHeatmap extends Component {
     games: React.PropTypes.array.isRequired,
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = { selectedGame: {} };
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
   componentDidMount() {
     const svg = d3.select(document.getElementById('chart'))
       .append('svg')
@@ -181,15 +189,69 @@ export class CourtHeatmap extends Component {
       .attr('y2', 330);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.games !== nextProps.games) {
+      return true;
+    }
+
+    if (this.state.selectedGame !== nextState.selectedGame) {
+      return true;
+    }
+
+    return false;
+  }
+
+  handleChange(event) {
+    // console.log(event.target.value);
+    const selectedGame = this.props.games[event.target.value];
+
+    selectedGame.shotData = selectedGame.shotData.map((shot) => {
+      let { locX, locY, ...details } = shot;
+      if (locX < 0) {
+        locX = Math.abs(locX) + 250;
+      } else {
+        locX = 250 - locX;
+      }
+
+      locY = 470 - locY;
+
+      return {
+        details,
+        locX,
+        locY,
+      };
+    });
+
+    console.log(selectedGame);
+
+    // selectedGame.shotData = this.convertShotData(selectedGame.shotData);
+    this.setState({ selectedGame });
+  }
+
+  convertShotData(locX, locY) {
+    let { x, y } = [locX, locY];
+
+    if (x < 0) {
+      x = Math.abs(x) + 250;
+    } else {
+      x = 250 - x;
+    }
+
+    y = 470 - locY;
+
+    return [x, y];
+  }
+
   render() {
-    const options = this.props.games.map(game => (
-      <option key={game.gameId}>{game.htm} vs. {game.vtm} ({game.gameDate})</option>
+    const options = this.props.games.map((game, index) => (
+      <option key={game.gameId} value={index}>{game.htm} vs. {game.vtm} ({game.gameDate})</option>
     ));
 
     return (
       <div className="col-md-8">
         <div id="chart" />
-        <select className="form-control" id="game-dropdown">
+        <select className="form-control" id="game-dropdown" onChange={this.handleChange}>
+          <option>Select A Game...</option>
           {options}
         </select>
       </div>
