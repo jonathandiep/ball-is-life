@@ -2,9 +2,6 @@ import React from 'react';
 import { Link } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-App.propTypes = {
-  children: React.PropTypes.element.isRequired,
-};
 
 function App({ children }) {
   return (
@@ -25,5 +22,10 @@ function App({ children }) {
     </div>
   );
 }
+
+
+App.propTypes = {
+  children: React.PropTypes.element.isRequired,
+};
 
 export default App;

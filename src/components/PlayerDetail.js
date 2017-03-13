@@ -2,11 +2,6 @@
 
 import React from 'react';
 
-PlayerDetail.propTypes = {
-  player: React.PropTypes.object.isRequired,
-  button: React.PropTypes.element,
-};
-
 function PlayerDetail({ player = {}, button }) {
   return (
     <div className="col-md-4">
@@ -23,5 +18,11 @@ function PlayerDetail({ player = {}, button }) {
     </div>
   );
 }
+
+
+PlayerDetail.propTypes = {
+  player: React.PropTypes.object.isRequired,
+  button: React.PropTypes.element,
+};
 
 export default PlayerDetail;

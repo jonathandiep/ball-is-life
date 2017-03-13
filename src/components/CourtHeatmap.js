@@ -242,6 +242,13 @@ export class CourtHeatmap extends Component {
     return [x, y];
   }
 
+  /**
+   * TODO: Have this.props.games modified so that there's an array to plot points
+   *
+   * @returns React Element
+   *
+   * @memberOf CourtHeatmap
+   */
   render() {
     const options = this.props.games.map((game, index) => (
       <option key={game.gameId} value={index}>{game.htm} vs. {game.vtm} ({game.gameDate})</option>
