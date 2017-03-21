@@ -85,10 +85,10 @@ class Player extends Component {
   componentDidMount() {
     if (this.state.loading) {
       const details = Observable.fromPromise(
-        axios.get(`http://localhost:8080/player-details/${this.props.params.playerId}`),
+        axios.get(`http://138.68.12.97/player-details/${this.props.params.playerId}`),
       );
       const shots = Observable.fromPromise(
-        axios.get(`http://localhost:8080/player-shots/${this.props.params.playerId}`),
+        axios.get(`http://138.68.12.97/player-shots/${this.props.params.playerId}`),
       );
 
       const source = Observable.merge(details, shots);
