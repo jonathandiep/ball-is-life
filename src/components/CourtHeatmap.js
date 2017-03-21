@@ -1,6 +1,5 @@
 // Make a heat map component here. Just pass data into it
 import React, { Component } from 'react';
-import { Subject } from 'rxjs';
 import * as d3 from 'd3';
 
 

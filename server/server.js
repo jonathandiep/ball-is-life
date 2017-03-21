@@ -10,6 +10,8 @@ const players = require('nba/data/players.json');
 const app = new Koa();
 const router = new Router();
 
+app.use(require('koa-static')('../build'));
+
 app.use(compress({
   filter: function (content_type) {
     return /text/i.test(content_type)
