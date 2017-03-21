@@ -1,5 +1,6 @@
 // Make a heat map component here. Just pass data into it
 import React, { Component } from 'react';
+import { Subject } from 'rxjs';
 import * as d3 from 'd3';
 
 
@@ -22,6 +23,7 @@ export class CourtHeatmap extends Component {
   componentDidMount() {
     const svg = d3.select(document.getElementById('chart'))
       .append('svg')
+      .attr('id', 'svg-court')
       .attr('width', 500)
       .attr('height', 470)
       .attr('fill', 'white')
@@ -201,11 +203,14 @@ export class CourtHeatmap extends Component {
     return false;
   }
 
+  componentWillUnmount() {
+    // unsubscribe
+  }
+
   handleChange(event) {
     // console.log(event.target.value);
     const selectedGame = this.props.games[event.target.value];
-
-    selectedGame.shotData = selectedGame.shotData.map((shot) => {
+    const gameData = selectedGame.shotData.map((shot) => {
       let { locX, locY, ...details } = shot;
       if (locX < 0) {
         locX = Math.abs(locX) + 250;
@@ -213,7 +218,7 @@ export class CourtHeatmap extends Component {
         locX = 250 - locX;
       }
 
-      locY = 470 - locY;
+      locY = 415 - locY;
 
       return {
         details,
@@ -222,28 +227,105 @@ export class CourtHeatmap extends Component {
       };
     });
 
-    console.log(selectedGame);
+
+    const elements = document.getElementsByClassName('shot-point');
+    for (let i = elements.length - 1; i >= 0; i--) {
+      elements[i].parentNode.removeChild(elements[i]);
+    }
+
+
+    console.log(gameData);
+    this.displayShots(gameData);
+
+
+    // this.displayShots(selectedGame.shotData);
 
     // selectedGame.shotData = this.convertShotData(selectedGame.shotData);
     this.setState({ selectedGame });
   }
 
-  convertShotData(locX, locY) {
-    let { x, y } = [locX, locY];
+  /**
+   * Display shots in d3 here
+   *
+   * @param {number[][]} shots
+   *
+   * @memberOf CourtHeatmap
+   */
+  displayShots(shots) {
+    const svg = d3.select(document.getElementById('svg-court'));
+    // const dataset = shots.map(shot => [`${shot.locX}`, `${shot.locY}`]);
+    // filter dataset into scored and not scored
+    const scoredShots = [];
+    const missedShots = [];
 
-    if (x < 0) {
-      x = Math.abs(x) + 250;
-    } else {
-      x = 250 - x;
-    }
+    shots.forEach((shot) => {
+      let seconds = shot.details.secondsRemaining;
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+      if (shot.details.eventType === 'Made Shot') {
+        scoredShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.details.period} - ${shot.details.minutesRemaining}:${seconds}`]);
+      } else {
+        missedShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.details.period} - ${shot.details.minutesRemaining}:${seconds}`]);
+      }
+    });
 
-    y = 470 - locY;
+    const div = d3.select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
 
-    return [x, y];
+    svg.selectAll('#shot-point circle')
+      .data(scoredShots)
+      .enter()
+      .append('circle')
+      .classed('shot-point', true)
+      .attr('cx', d => d[0])
+      .attr('cy', d => d[1])
+      .attr('r', () => 4)
+      .attr('stroke', 'green')
+      .attr('fill', 'green')
+      .on('mouseover', (d) => {
+        div.transition()
+          .duration(200)
+          .style('opacity', 0.9);
+        div.html(`${d[2]} left`)
+          .style('top', `${event.pageY - 10}px`)
+          .style('left', `${event.pageX + 10}px`);
+      })
+      .on('mouseout', () => {
+        div.transition()
+          .duration(500)
+          .style('opacity', 0);
+      });
+
+    svg.selectAll('#shot-point circle')
+      .data(missedShots)
+      .enter()
+      .append('circle')
+      .classed('shot-point', true)
+      .attr('cx', d => d[0])
+      .attr('cy', d => d[1])
+      .attr('r', () => 4)
+      .attr('stroke', 'red')
+      .attr('fill', 'red')
+      .on('mouseover', (d) => {
+        div.transition()
+          .duration(200)
+          .style('opacity', 0.9);
+        div.html(`${d[2]} left`)
+          .style('top', `${event.pageY - 10}px`)
+          .style('left', `${event.pageX + 10}px`);
+      })
+      .on('mouseout', () => {
+        div.transition()
+          .duration(500)
+          .style('opacity', 0);
+      });
   }
 
   /**
-   * TODO: Have this.props.games modified so that there's an array to plot points
+   * Dropdown of a player's games
    *
    * @returns React Element
    *

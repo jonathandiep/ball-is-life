@@ -29,7 +29,9 @@
     "no-shadow": "warn",
     "react/forbid-prop-types": "off",
     "react/require-default-props": "off",
-    "max-len": "warn"
+    "max-len": "warn",
+    "prefer-const": "warn",
+    "no-plusplus": "off"
   },
   "extends": [
     "react-app",
