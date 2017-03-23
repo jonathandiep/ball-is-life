@@ -54,7 +54,7 @@ class Home extends Component {
   // Make a call to retrieve player data if it doesn't exist in redux store or localStorage
   componentWillMount() {
     if (this.props.players.length === 0 && _.isEmpty(localStorage.getItem('reduxPersist:players'))) {
-      let players = Observable.fromPromise(axios.get('http://138.68.12.97/players'));
+      let players = Observable.fromPromise(axios.get(`${process.env.PUBLIC_URL}/players`));
       let subscription = players.subscribe((res) => {
         this.props.retrievePlayers(res.data);
       }, err => console.error(err));
