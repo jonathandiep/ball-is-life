@@ -38,10 +38,6 @@ app.use(async function (ctx, next) {
   console.log(`${ctx.method} ${ctx.url} - ${ms}`);
 });
 
-router.get('/', function (ctx, next) {
-  ctx.body = 'hello';
-});
-
 router.get('/players', function (ctx, next) {
   ctx.body = players;
 });
