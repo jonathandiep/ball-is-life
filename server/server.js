@@ -3,6 +3,7 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const cors = require('kcors');
+const send = require('koa-send');
 const compress = require('koa-compress');
 const nba = require('nba');
 const players = require('nba/data/players.json');
@@ -77,5 +78,8 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
+app.use(async function (ctx) {
+  await send(ctx, 'index.html', { root: '../build' })
+})
 
 app.listen(8080, () => console.log('app starting on port 8080'));
