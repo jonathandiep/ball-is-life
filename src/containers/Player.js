@@ -6,26 +6,26 @@ import axios from 'axios';
 import * as _ from 'lodash';
 
 import {
-  selectPlayer,
+  // selectPlayer,
   getPlayerDetails,
   getPlayerShots,
   resetActivePlayer,
-  addPlayer,
+  savePlayer,
   deletePlayer,
   retrievePlayerStorage,
 } from '../redux/actions';
 import PlayerDetail from '../components/PlayerDetail';
 import { CourtHeatmap } from '../components/CourtHeatmap';
 
-const players = require('nba/data/players.json');
+// const players = require('nba/data/players.json');
 
 class Player extends Component {
   static propTypes = {
     player: React.PropTypes.object.isRequired,
     params: React.PropTypes.object.isRequired,
-    addPlayer: React.PropTypes.func,
+    savePlayer: React.PropTypes.func,
     deletePlayer: React.PropTypes.func,
-    selectPlayer: React.PropTypes.func,
+    // selectPlayer: React.PropTypes.func,
     getPlayerDetails: React.PropTypes.func,
     getPlayerShots: React.PropTypes.func,
     resetActivePlayer: React.PropTypes.func,
@@ -42,6 +42,7 @@ class Player extends Component {
   constructor(props) {
     super(props);
 
+    /* MAY NO LONGER BE NECESSARY SINCE DATA IS BEING PULLED IN BY PARAMS
     if (this.props.player === null) {
       const player = players.filter((filteredPlayer) => {
         if (Number(filteredPlayer.playerId) === Number(this.props.params.playerId)) {
@@ -51,6 +52,7 @@ class Player extends Component {
 
       this.props.selectPlayer(player[0]);
     }
+    */
 
     this.state = {
       loading: true,
@@ -194,7 +196,7 @@ class Player extends Component {
       button = <button onClick={() => this.props.deletePlayer(this.props.player.playerId)} className="btn btn-danger">Delete</button>;
     } else {
       button = (
-        <button onClick={() => this.props.addPlayer(this.props.player)} className="btn btn-primary">Add to Team</button>
+        <button onClick={() => this.props.savePlayer(this.props.player)} className="btn btn-primary">Save Player</button>
       );
     }
 
@@ -206,7 +208,7 @@ class Player extends Component {
     return (
       <div className="container">
         <div className="row">
-          <PlayerDetail player={this.props.player} button={button} />
+          <PlayerDetail player={this.props.player} button={button} playerId={this.props.params.playerId} />
           <CourtHeatmap games={games} />
         </div>
       </div>
@@ -224,11 +226,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      selectPlayer,
+      // selectPlayer,
       getPlayerDetails,
       getPlayerShots,
       resetActivePlayer,
-      addPlayer,
+      savePlayer,
       deletePlayer,
       retrievePlayerStorage,
     },

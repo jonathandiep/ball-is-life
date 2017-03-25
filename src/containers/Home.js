@@ -24,10 +24,6 @@ class Home extends Component {
 
   }
 
-
-  /**
-   * TODO: Debounce so app doesn't have to make call every change (make it 500ms or so)
-   */
   onChange(event) {
     this.setState({ term: event.target.value });
 
@@ -71,21 +67,23 @@ class Home extends Component {
     );
 
     return (
-      <div>
-        <form>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search a player..."
-              onChange={this.onChange} />
-            <div>
-              <ul>
-                {playersList}
-              </ul>
+      <div className="container">
+        <div className="col-12 col-md-8 offset-md-2">
+          <form>
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search a player..."
+                onChange={this.onChange} />
+              <div>
+                <ul>
+                  {playersList}
+                </ul>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     )
   }

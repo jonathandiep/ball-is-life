@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { deletePlayer } from '../redux/actions';
 
-class Team extends Component {
+class SavedPlayers extends Component {
   static propTypes = {
     team: React.PropTypes.array.isRequired,
     deletePlayer: React.PropTypes.func,
@@ -33,7 +33,7 @@ class Team extends Component {
   render() {
     if (this.props.team.length > 0) {
       const playerList = this.props.team.map(player =>
-        <div key={player.playerId} className="row">
+        <div key={player.playerId || player.personId} className="row">
           <div className="col-sm-12 col-md-6">
             <div className="card">
               <h3 className="card-header">{player.firstName} {player.lastName}</h3>
@@ -49,7 +49,11 @@ class Team extends Component {
       return <div>{playerList}</div>;
     }
 
-    return <div>Team is empty</div>;
+    return (
+      <div className="col-12 col-md-8 offset-md-2">
+        <p className="text-center">You have no saved players</p>
+      </div>
+    );
   }
 }
 
@@ -63,4 +67,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ deletePlayer }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Team);
+export default connect(mapStateToProps, mapDispatchToProps)(SavedPlayers);

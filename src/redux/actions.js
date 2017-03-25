@@ -10,7 +10,7 @@ export const RESET_ACTIVE_PLAYER = 'RESET_ACTIVE_PLAYER';
 export const RETRIEVE_PLAYER_STORAGE = 'RETRIEVE_PLAYER_STORAGE';
 
 // Actions used to manage team
-export const ADD_PLAYER = 'ADD_PLAYER';
+export const SAVE_PLAYER = 'SAVE_PLAYER';
 export const DELETE_PLAYER = 'DELETE_PLAYER';
 
 // Gets player data from json file (will later be extracted to backend)
@@ -63,9 +63,9 @@ export function retrievePlayerStorage(player) {
   };
 }
 
-export function addPlayer(player) {
+export function savePlayer(player) {
   return {
-    type: ADD_PLAYER,
+    type: SAVE_PLAYER,
     payload: player,
   };
 }
