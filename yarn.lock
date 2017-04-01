@@ -4109,9 +4109,9 @@ nba-client-template@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/nba-client-template/-/nba-client-template-3.3.0.tgz#71dd8f0659575217ef0adef0ffcaf1428989ec1e"
 
-nba@^3.2.0:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/nba/-/nba-3.2.4.tgz#bca35d3a45ec042e0712c5d7f1dcbe8362a9e320"
+nba@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/nba/-/nba-3.2.6.tgz#33adc73d3ba82ccc9a4ebe2abb129650ab475144"
   dependencies:
     camel-case "^3.0.0"
     debug "^2.2.0"
@@ -4126,6 +4126,7 @@ nba@^3.2.0:
     lodash.pick "^3.1.0"
     minimist "^1.2.0"
     nba-client-template "^3.3.0"
+    node-fetch "^1.6.3"
     pify "^2.3.0"
 
 ncname@1.0.x:
@@ -4150,7 +4151,7 @@ node-emoji@^1.4.1:
   dependencies:
     string.prototype.codepointat "^0.2.0"
 
-node-fetch@^1.0.1:
+node-fetch@^1.0.1, node-fetch@^1.6.3:
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.6.3.tgz#dc234edd6489982d58e8f0db4f695029abcd8c04"
   dependencies:
