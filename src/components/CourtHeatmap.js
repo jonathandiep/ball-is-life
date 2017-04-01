@@ -330,9 +330,17 @@ export class CourtHeatmap extends Component {
    *
    * @memberOf CourtHeatmap
    */
+
+  parseGameDate(date) {
+    const year = date.substring(0, 4);
+    const month = date.substring(4, 6);
+    const day = date.substring(6);
+    return `${month}/${day}/${year}`;
+  }
+
   render() {
     const options = this.props.games.map((game, index) => (
-      <option key={game.gameId} value={index}>{game.htm} vs. {game.vtm} ({game.gameDate})</option>
+      <option key={game.gameId} value={index}>{game.htm} vs. {game.vtm} ({this.parseGameDate(game.gameDate)})</option>
     ));
 
     return (
