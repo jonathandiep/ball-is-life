@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
 import axios from 'axios';
-import * as _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 import {
   // selectPlayer,
@@ -15,8 +15,9 @@ import {
   retrievePlayerStorage,
 } from '../redux/actions';
 import PlayerDetail from '../components/PlayerDetail';
-import Loading from '../components/Loading';
 import { CourtHeatmap } from '../components/CourtHeatmap';
+import Loading from '../components/Loading';
+import { funFacts } from '../assets/facts';
 
 // const players = require('nba/data/players.json');
 
@@ -43,30 +44,23 @@ class Player extends Component {
   constructor(props) {
     super(props);
 
-    /* MAY NO LONGER BE NECESSARY SINCE DATA IS BEING PULLED IN BY PARAMS
-    if (this.props.player === null) {
-      const player = players.filter((filteredPlayer) => {
-        if (Number(filteredPlayer.playerId) === Number(this.props.params.playerId)) {
-          return filteredPlayer;
-        }
-      });
-
-      this.props.selectPlayer(player[0]);
-    }
-    */
-
     this.state = {
       loading: true,
       subscription: [],
       playerInTeam: [],
+      funFact: '',
     };
 
     this.sortShotsToGames = this.sortShotsToGames.bind(this);
   }
 
   componentWillMount() {
+    this.setState({
+      funFact: funFacts[Math.floor(Math.random() * funFacts.length)],
+    });
+
     let activePlayer = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
-    if (!_.isEmpty(activePlayer)) {
+    if (!isEmpty(activePlayer)) {
       if (activePlayer.personId === Number(this.props.params.playerId)) {
         this.props.retrievePlayerStorage(activePlayer);
         this.setState({ loading: false });
@@ -124,14 +118,17 @@ class Player extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.playerInTeam !== nextState.playerInTeam) {
+      console.log('update props playerInTeam');
       return true;
     }
 
     if (this.props.player !== nextProps.player) {
+      console.log('update props player');
       return true;
     }
 
     if (this.state.loading !== nextState.loading) {
+      console.log('update props loading');
       return true;
     }
 
@@ -141,7 +138,7 @@ class Player extends Component {
   componentWillUnmount() {
     // redux action to reset current player
     this.props.resetActivePlayer();
-    if (!_.isEmpty(this.state.subscription)) {
+    if (!isEmpty(this.state.subscription)) {
       this.state.subscription.unsubscribe();
     }
   }
@@ -187,8 +184,7 @@ class Player extends Component {
 
   render() {
     if (this.state.loading) {
-      // return <div>Loading</div>;
-      return <Loading />;
+      return <Loading fact={this.state.funFact} />;
     }
 
     let button;
