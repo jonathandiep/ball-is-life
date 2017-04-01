@@ -15,6 +15,7 @@ import {
   retrievePlayerStorage,
 } from '../redux/actions';
 import PlayerDetail from '../components/PlayerDetail';
+import Loading from '../components/Loading';
 import { CourtHeatmap } from '../components/CourtHeatmap';
 
 // const players = require('nba/data/players.json');
@@ -186,7 +187,8 @@ class Player extends Component {
 
   render() {
     if (this.state.loading) {
-      return <div>Loading</div>;
+      // return <div>Loading</div>;
+      return <Loading />;
     }
 
     let button;

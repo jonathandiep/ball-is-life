@@ -7,6 +7,7 @@ import { persistStore, autoRehydrate } from 'redux-persist';
 // import localForage from 'localforage';
 
 import App from './components/App';
+import Team from './components/Team';
 import Teams from './components/Teams';
 import reducers from './redux/reducers';
 
@@ -33,6 +34,7 @@ ReactDOM.render(
         <Route path="/saved-players" component={SavedPlayers} />
         <Route path="/player/:playerId" component={Player} />
         <Route path="/teams" component={Teams} />
+        <Route path="/team/:teamId" component={Team} />
       </Route>
     </Router>
   </Provider>,

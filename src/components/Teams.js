@@ -1,15 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const teams = require('nba/data/teams.json');
 
-function Teams() {
+export default function Teams() {
   const displayTeams = teams.map(team =>
-    <div key={team.teamId} className="card">
-      <img className="card-img-top mx-auto d-block" src={`http://i.cdn.turner.com/nba/nba/assets/logos/teams/secondary/web/${team.abbreviation}.svg`} alt={team.teamName} />
-      <div className="card-block">
-        <h4 className="text-center">{team.teamName}</h4>
+    <Link to={`/team/${team.teamId}`} key={team.teamId}>
+      <div className="card">
+        <img className="card-img-top img-fluid mx-auto d-block" src={`http://i.cdn.turner.com/nba/nba/assets/logos/teams/secondary/web/${team.abbreviation}.svg`} alt={team.teamName} />
+        <div className="card-block">
+          <h4 className="text-center">{team.teamName}</h4>
+        </div>
       </div>
-    </div>,
+    </Link>,
   );
 
   return (
@@ -22,5 +25,3 @@ function Teams() {
     </div>
   );
 }
-
-export default Teams;
