@@ -118,17 +118,14 @@ class Player extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.playerInTeam !== nextState.playerInTeam) {
-      console.log('update props playerInTeam');
       return true;
     }
 
     if (this.props.player !== nextProps.player) {
-      console.log('update props player');
       return true;
     }
 
     if (this.state.loading !== nextState.loading) {
-      console.log('update props loading');
       return true;
     }
 
