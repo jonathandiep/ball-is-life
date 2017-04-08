@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Observable } from 'rxjs';
 import axios from 'axios';
 import { isEmpty } from 'lodash';
 
@@ -20,7 +19,13 @@ import { CourtHeatmap } from '../components/CourtHeatmap';
 import Loading from '../components/Loading';
 import { funFacts } from '../assets/facts';
 
-// const players = require('nba/data/players.json');
+function retrievePlayerDetails(playerId) {
+  return axios.get(`${process.env.PUBLIC_URL}/player-details/${playerId}`);
+}
+
+function retrievePlayerShots(playerId) {
+  return axios.get(`${process.env.PUBLIC_URL}/player-shots/${playerId}`);
+}
 
 class Player extends Component {
   static propTypes = {
@@ -83,28 +88,17 @@ class Player extends Component {
 
   componentDidMount() {
     if (this.state.loading) {
-      const details = Observable.fromPromise(
-        axios.get(`${process.env.PUBLIC_URL}/player-details/${this.props.match.params.playerId}`),
-      );
-      const shots = Observable.fromPromise(
-        axios.get(`${process.env.PUBLIC_URL}/player-shots/${this.props.match.params.playerId}`),
-      );
+      const playerId = this.props.match.params.playerId;
 
-      const source = Observable.merge(details, shots);
-
-      const subscription = source.subscribe((res) => {
-        console.log(res.data);
-        if (res.data.commonPlayerInfo) {
-          this.props.getPlayerDetails(res.data.commonPlayerInfo[0]);
-        } else {
-          this.props.getPlayerShots(res.data);
-        }
-      }, (err) => {
-        console.error(err);
-      }, () => this.setState({ loading: false }));
-
-      /* eslint-disable react/no-did-mount-set-state*/
-      this.setState({ subscription });
+      axios.all([retrievePlayerDetails(playerId), retrievePlayerShots(playerId)])
+        .then(axios.spread((details, shots) => {
+          console.log(details.data);
+          console.log(shots.data);
+          this.props.getPlayerDetails(details.data.commonPlayerInfo[0]);
+          this.props.getPlayerShots(shots.data);
+          this.setState({ loading: false });
+        }))
+        .catch(err => console.error(err));
     }
   }
 
@@ -134,16 +128,12 @@ class Player extends Component {
     return false;
   }
 
+  // redux action to reset current player
   componentWillUnmount() {
-    // redux action to reset current player
     this.props.resetActivePlayer();
-    if (!isEmpty(this.state.subscription)) {
-      this.state.subscription.unsubscribe();
-    }
   }
 
   sortShotsToGames(shots) {
-    // modify shots here (use binary search to insert shot in the game)
     const games = [];
 
     shots.forEach((shot) => {

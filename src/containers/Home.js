@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Observable } from 'rxjs';
 import { isEmpty } from 'lodash';
 import axios from 'axios';
 
@@ -30,18 +29,11 @@ class Home extends Component {
   // Make a call to retrieve player data if it doesn't exist in redux store or localStorage
   componentWillMount() {
     if (this.props.players.length === 0 && isEmpty(localStorage.getItem('reduxPersist:players'))) {
-      const players = Observable.fromPromise(axios.get(`${process.env.PUBLIC_URL}/players`));
-      const subscription = players.subscribe((res) => {
-        this.props.retrievePlayers(res.data);
-      }, err => console.error(err));
-
-      this.setState({ subscription });
-    }
-  }
-
-  componentWillUnmount() {
-    if (!isEmpty(this.state.subscription)) {
-      this.state.subscription.unsubscribe();
+      axios.get(`${process.env.PUBLIC_URL}/players`)
+        .then((res) => {
+          this.props.retrievePlayers(res.data);
+        })
+        .catch(err => console.error(err));
     }
   }
 
@@ -63,7 +55,6 @@ class Home extends Component {
     } else {
       this.setState({
         results: [],
-        subscription: [],
       });
     }
   }
