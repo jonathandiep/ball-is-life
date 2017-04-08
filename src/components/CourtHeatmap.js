@@ -1,5 +1,6 @@
 // Make a heat map component here. Just pass data into it
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
 
@@ -8,7 +9,7 @@ import '../styles/styles.css';
 /* eslint-disable import/prefer-default-export */
 export class CourtHeatmap extends Component {
   static propTypes = {
-    games: React.PropTypes.array.isRequired,
+    games: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -202,12 +203,7 @@ export class CourtHeatmap extends Component {
     return false;
   }
 
-  componentWillUnmount() {
-    // unsubscribe
-  }
-
   handleChange(event) {
-    // console.log(event.target.value);
     const selectedGame = this.props.games[event.target.value];
     const gameData = selectedGame.shotData.map((shot) => {
       let { locX, locY, ...details } = shot;

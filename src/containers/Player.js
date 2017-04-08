@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
@@ -23,15 +24,15 @@ import { funFacts } from '../assets/facts';
 
 class Player extends Component {
   static propTypes = {
-    player: React.PropTypes.object.isRequired,
-    params: React.PropTypes.object.isRequired,
-    savePlayer: React.PropTypes.func,
-    deletePlayer: React.PropTypes.func,
-    // selectPlayer: React.PropTypes.func,
-    getPlayerDetails: React.PropTypes.func,
-    getPlayerShots: React.PropTypes.func,
-    resetActivePlayer: React.PropTypes.func,
-    retrievePlayerStorage: React.PropTypes.func,
+    player: PropTypes.object.isRequired,
+    params: PropTypes.object.isRequired,
+    savePlayer: PropTypes.func,
+    deletePlayer: PropTypes.func,
+    // selectPlayer: PropTypes.func,
+    getPlayerDetails: PropTypes.func,
+    getPlayerShots: PropTypes.func,
+    resetActivePlayer: PropTypes.func,
+    retrievePlayerStorage: PropTypes.func,
   }
 
   static defaultProps = {

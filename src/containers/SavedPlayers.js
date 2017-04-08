@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -7,8 +8,8 @@ import { deletePlayer } from '../redux/actions';
 
 class SavedPlayers extends Component {
   static propTypes = {
-    team: React.PropTypes.array.isRequired,
-    deletePlayer: React.PropTypes.func,
+    team: PropTypes.array.isRequired,
+    deletePlayer: PropTypes.func,
   }
 
   static defaultProps = {

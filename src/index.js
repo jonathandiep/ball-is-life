@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { persistStore, autoRehydrate } from 'redux-persist';
-// import localForage from 'localforage';
 
 import App from './components/App';
 import Team from './components/Team';
@@ -23,9 +22,6 @@ const store = createStore(reducers, composeEnhancers(
 
 persistStore(store);
 
-/**
- * TODO: Make /teams, /team/:teamId
- */
 ReactDOM.render(
   <Provider store={store}>
     <Router history={browserHistory}>

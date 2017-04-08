@@ -1,4 +1,3 @@
-/* eslint-disable */
 
 const Koa = require('koa');
 const Router = require('koa-router');
@@ -19,12 +18,13 @@ app.use(compress({
   },
   threshold: 2048,
   flush: require('zlib').Z_SYNC_FLUSH
-}))
+}));
 
 app.use(cors());
 
 // x-repsonse time
-app.use(async function (ctx, next) {
+
+app.use(async (ctx, next) => {
   const start = new Date();
   await next();
   const ms = new Date() - start;
@@ -32,14 +32,14 @@ app.use(async function (ctx, next) {
 });
 
 // logging
-app.use(async function (ctx, next) {
+app.use(async (ctx, next) => {
   const start = new Date();
   await next();
   const ms = new Date() - start;
   console.log(`${ctx.method} ${ctx.url} - ${ms}`);
 });
 
-router.get('/players', function (ctx, next) {
+router.get('/players', (ctx, next) => {
   ctx.body = players;
 });
 
@@ -60,16 +60,16 @@ function getPlayerShots(PlayerID) {
 }
 
 router
-  .param('playerId', function (playerId, ctx, next) {
+  .param('playerId', (playerId, ctx, next) => {
     ctx.state.playerId = playerId;
     if (!ctx.state.playerId) return ctx.status = 404;
     return next();
   })
-  .get('/player-details/:playerId', async function (ctx) {
+  .get('/player-details/:playerId', async (ctx) => {
     await getPlayerDetails(ctx.state.playerId)
       .then(data => ctx.body = data);
   })
-  .get('/player-shots/:playerId', async function (ctx) {
+  .get('/player-shots/:playerId', async (ctx) => {
     await getPlayerShots(ctx.state.playerId)
       .then(data => ctx.body = data);
   });
@@ -78,7 +78,7 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.use(async function (ctx) {
+app.use(async (ctx) => {
   await send(ctx, 'index.html', { root: '../build' })
 })
 

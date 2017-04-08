@@ -1,6 +1,5 @@
-// Make a player detail component here. Pass in player details
-
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function PlayerDetail({ player, playerId, button }) {
   return (
@@ -21,9 +20,9 @@ function PlayerDetail({ player, playerId, button }) {
 }
 
 PlayerDetail.propTypes = {
-  player: React.PropTypes.object.isRequired,
-  playerId: React.PropTypes.string,
-  button: React.PropTypes.element,
+  player: PropTypes.object.isRequired,
+  playerId: PropTypes.string,
+  button: PropTypes.element,
 };
 
 export default PlayerDetail;

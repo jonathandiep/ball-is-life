@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import '../styles/loading.css';
 
 export default function Loading(props) {
@@ -14,5 +15,5 @@ export default function Loading(props) {
 }
 
 Loading.propTypes = {
-  fact: React.PropTypes.string,
+  fact: PropTypes.string,
 };

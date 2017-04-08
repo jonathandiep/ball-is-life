@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../assets/bball.png';
@@ -32,7 +33,7 @@ function App({ children }) {
 }
 
 App.propTypes = {
-  children: React.PropTypes.element.isRequired,
+  children: PropTypes.element.isRequired,
 };
 
 export default App;
