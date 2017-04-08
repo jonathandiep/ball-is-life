@@ -1,4 +1,3 @@
-
 const Koa = require('koa');
 const Router = require('koa-router');
 const cors = require('kcors');
@@ -23,7 +22,6 @@ app.use(compress({
 app.use(cors());
 
 // x-repsonse time
-
 app.use(async (ctx, next) => {
   const start = new Date();
   await next();
