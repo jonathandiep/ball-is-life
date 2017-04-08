@@ -1,13 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const teams = require('nba/data/teams.json');
 const players = require('nba/data/players.json');
 
 export default function Team(props) {
-  const roster = players.filter(player => player.teamId === Number(props.params.teamId));
-  const selectedTeam = teams.filter(team => team.teamId === Number(props.params.teamId))[0];
-  console.log(selectedTeam);
+  const roster = players.filter(player => player.teamId === Number(props.match.params.teamId));
+  const selectedTeam = teams.filter(team => team.teamId === Number(props.match.params.teamId))[0];
 
   const displayRoster = roster.map(player =>
     <Link to={`/player/${player.playerId}`} key={player.playerId}>

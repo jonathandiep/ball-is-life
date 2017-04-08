@@ -206,7 +206,8 @@ export class CourtHeatmap extends Component {
   handleChange(event) {
     const selectedGame = this.props.games[event.target.value];
     const gameData = selectedGame.shotData.map((shot) => {
-      let { locX, locY, ...details } = shot;
+      let { locX, locY } = shot;
+      const { eventType, period, minutesRemaining, secondsRemaining } = shot;
       if (locX < 0) {
         locX = Math.abs(locX) + 250;
       } else {
@@ -216,26 +217,21 @@ export class CourtHeatmap extends Component {
       locY = 415 - locY;
 
       return {
-        details,
+        eventType,
         locX,
         locY,
+        period,
+        minutesRemaining,
+        secondsRemaining,
       };
     });
-
 
     const elements = document.getElementsByClassName('shot-point');
     for (let i = elements.length - 1; i >= 0; i--) {
       elements[i].parentNode.removeChild(elements[i]);
     }
 
-
-    console.log(gameData);
     this.displayShots(gameData);
-
-
-    // this.displayShots(selectedGame.shotData);
-
-    // selectedGame.shotData = this.convertShotData(selectedGame.shotData);
     this.setState({ selectedGame });
   }
 
@@ -254,14 +250,14 @@ export class CourtHeatmap extends Component {
     const missedShots = [];
 
     shots.forEach((shot) => {
-      let seconds = shot.details.secondsRemaining;
+      let seconds = shot.secondsRemaining;
       if (seconds < 10) {
         seconds = `0${seconds}`;
       }
-      if (shot.details.eventType === 'Made Shot') {
-        scoredShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.details.period} - ${shot.details.minutesRemaining}:${seconds}`]);
+      if (shot.eventType === 'Made Shot') {
+        scoredShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.period} - ${shot.minutesRemaining}:${seconds}`]);
       } else {
-        missedShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.details.period} - ${shot.details.minutesRemaining}:${seconds}`]);
+        missedShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.period} - ${shot.minutesRemaining}:${seconds}`]);
       }
     });
 

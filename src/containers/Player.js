@@ -25,6 +25,7 @@ import { funFacts } from '../assets/facts';
 class Player extends Component {
   static propTypes = {
     player: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
     params: PropTypes.object.isRequired,
     savePlayer: PropTypes.func,
     deletePlayer: PropTypes.func,
@@ -62,13 +63,13 @@ class Player extends Component {
 
     let activePlayer = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
     if (!isEmpty(activePlayer)) {
-      if (activePlayer.personId === Number(this.props.params.playerId)) {
+      if (activePlayer.personId === Number(this.props.match.params.playerId)) {
         this.props.retrievePlayerStorage(activePlayer);
         this.setState({ loading: false });
       }
     } else if (localStorage.getItem('reduxPersist:team')) {
       activePlayer = JSON.parse(localStorage.getItem('reduxPersist:team')).filter((player) => {
-        if (player.playerId === Number(this.props.params.playerId)) {
+        if (player.playerId === Number(this.props.match.params.playerId)) {
           return player;
         }
       });
@@ -83,10 +84,10 @@ class Player extends Component {
   componentDidMount() {
     if (this.state.loading) {
       const details = Observable.fromPromise(
-        axios.get(`${process.env.PUBLIC_URL}/player-details/${this.props.params.playerId}`),
+        axios.get(`${process.env.PUBLIC_URL}/player-details/${this.props.match.params.playerId}`),
       );
       const shots = Observable.fromPromise(
-        axios.get(`${process.env.PUBLIC_URL}/player-shots/${this.props.params.playerId}`),
+        axios.get(`${process.env.PUBLIC_URL}/player-shots/${this.props.match.params.playerId}`),
       );
 
       const source = Observable.merge(details, shots);
@@ -109,7 +110,7 @@ class Player extends Component {
 
   componentWillReceiveProps(nextProps) {
     const playerInTeam = nextProps.team.filter((player) => {
-      if (player.personId === Number(this.props.params.playerId)) {
+      if (player.personId === Number(this.props.match.params.playerId)) {
         return player;
       }
     });
@@ -204,7 +205,7 @@ class Player extends Component {
     return (
       <div className="container">
         <div className="row">
-          <PlayerDetail player={this.props.player} button={button} playerId={this.props.params.playerId} />
+          <PlayerDetail player={this.props.player} button={button} playerId={this.props.match.params.playerId} />
           <CourtHeatmap games={games} />
         </div>
       </div>
