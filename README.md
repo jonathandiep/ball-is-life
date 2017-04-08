@@ -15,4 +15,4 @@ Props to Nick Bottomley for creating the [NBA API Endpoints](https://github.com/
  * [Redux](http://redux.js.org/) for managing application state
  * [D3.js](https://d3js.org/) for creating the shotchart
  * [Bootstrap](https://v4-alpha.getbootstrap.com/) for the application styles
- * [Koa](http://koajs.com/) for creating a backend to create  APIs for the app to interact with
+ * [Koa](http://koajs.com/) for creating a backend to create  APIs for the app to interact with and serving the files
