@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { isEmpty } from 'lodash';
 
 import {
-  // selectPlayer,
   getPlayerDetails,
   getPlayerShots,
   resetActivePlayer,
@@ -19,13 +17,7 @@ import { CourtHeatmap } from '../components/CourtHeatmap';
 import Loading from '../components/Loading';
 import { funFacts } from '../assets/facts';
 
-function retrievePlayerDetails(playerId) {
-  return axios.get(`${process.env.PUBLIC_URL}/player-details/${playerId}`);
-}
-
-function retrievePlayerShots(playerId) {
-  return axios.get(`${process.env.PUBLIC_URL}/player-shots/${playerId}`);
-}
+const nba = require('nba');
 
 class Player extends Component {
   static propTypes = {
@@ -89,16 +81,28 @@ class Player extends Component {
   componentDidMount() {
     if (this.state.loading) {
       const playerId = this.props.match.params.playerId;
+      const loading = [true, true];
 
-      axios.all([retrievePlayerDetails(playerId), retrievePlayerShots(playerId)])
-        .then(axios.spread((details, shots) => {
-          console.log(details.data);
-          console.log(shots.data);
-          this.props.getPlayerDetails(details.data.commonPlayerInfo[0]);
-          this.props.getPlayerShots(shots.data);
-          this.setState({ loading: false });
-        }))
+      nba.stats.playerInfo({ PlayerID: playerId })
+        .then((data) => {
+          this.props.getPlayerDetails(data.commonPlayerInfo[0]);
+          loading[0] = false;
+        })
         .catch(err => console.error(err));
+
+      nba.stats.shots({ PlayerID: playerId })
+        .then((data) => {
+          this.props.getPlayerShots(data);
+          loading[1] = false;
+        })
+        .catch(err => console.error(err));
+
+      setInterval(() => {
+        if (!loading[0] && !loading[1]) {
+          this.setState({ loading: false });
+          window.clearInterval();
+        }
+      }, 1000);
     }
   }
 
@@ -189,7 +193,6 @@ class Player extends Component {
 
     if (this.props.player.shot_Chart_Detail) {
       games = this.sortShotsToGames(this.props.player.shot_Chart_Detail);
-      console.log(games);
     }
 
     return (
@@ -213,7 +216,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      // selectPlayer,
       getPlayerDetails,
       getPlayerShots,
       resetActivePlayer,
