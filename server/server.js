@@ -3,6 +3,7 @@ const Router = require('koa-router');
 const cors = require('kcors');
 const send = require('koa-send');
 const compress = require('koa-compress');
+const zlib = require('zlib');
 const nba = require('nba');
 const players = require('nba/data/players.json');
 
@@ -12,11 +13,9 @@ const router = new Router();
 app.use(require('koa-static')('../build'));
 
 app.use(compress({
-  filter: function (content_type) {
-    return /text/i.test(content_type)
-  },
+  filter: contentType => /text/i.test(contentType),
   threshold: 2048,
-  flush: require('zlib').Z_SYNC_FLUSH
+  flush: zlib.Z_SYNC_FLUSH,
 }));
 
 app.use(cors());
@@ -39,12 +38,13 @@ app.use(async (ctx, next) => {
 
 router.get('/players', (ctx, next) => {
   ctx.body = players;
+  return next();
 });
 
 function getPlayerDetails(PlayerID) {
   try {
     return nba.stats.playerInfo({ PlayerID });
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 }
@@ -52,7 +52,7 @@ function getPlayerDetails(PlayerID) {
 function getPlayerShots(PlayerID) {
   try {
     return nba.stats.shots({ PlayerID });
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 }
@@ -60,16 +60,23 @@ function getPlayerShots(PlayerID) {
 router
   .param('playerId', (playerId, ctx, next) => {
     ctx.state.playerId = playerId;
-    if (!ctx.state.playerId) return ctx.status = 404;
+    if (!ctx.state.playerId) {
+      ctx.status = 404;
+      return ctx.status;
+    }
     return next();
   })
   .get('/player-details/:playerId', async (ctx) => {
     await getPlayerDetails(ctx.state.playerId)
-      .then(data => ctx.body = data);
+      .then((data) => {
+        ctx.body = data;
+      });
   })
   .get('/player-shots/:playerId', async (ctx) => {
     await getPlayerShots(ctx.state.playerId)
-      .then(data => ctx.body = data);
+      .then((data) => {
+        ctx.body = data;
+      });
   });
 
 app
@@ -77,7 +84,7 @@ app
   .use(router.allowedMethods());
 
 app.use(async (ctx) => {
-  await send(ctx, 'index.html', { root: '../build' })
-})
+  await send(ctx, 'index.html', { root: '../build' });
+});
 
 app.listen(8080, () => console.log('app starting on port 8080'));
