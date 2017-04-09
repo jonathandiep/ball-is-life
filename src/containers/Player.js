@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
+import nba from 'nba';
 
 import {
   getPlayerDetails,
@@ -17,8 +18,6 @@ import { CourtHeatmap } from '../components/CourtHeatmap';
 import Loading from '../components/Loading';
 import { funFacts } from '../assets/facts';
 
-const nba = require('nba');
-
 class Player extends Component {
   static propTypes = {
     player: PropTypes.object.isRequired,
@@ -26,7 +25,6 @@ class Player extends Component {
     params: PropTypes.object.isRequired,
     savePlayer: PropTypes.func,
     deletePlayer: PropTypes.func,
-    // selectPlayer: PropTypes.func,
     getPlayerDetails: PropTypes.func,
     getPlayerShots: PropTypes.func,
     resetActivePlayer: PropTypes.func,
