@@ -95,15 +95,16 @@ class Player extends Component {
         })
         .catch(err => console.error(err));
 
-      setInterval(() => {
+      const interval = setInterval(() => {
         if (!loading[0] && !loading[1]) {
           this.setState({ loading: false });
-          window.clearInterval();
+          clearInterval(interval);
         }
       }, 1000);
     }
   }
 
+  /*
   componentWillReceiveProps(nextProps) {
     const playerInTeam = nextProps.team.filter((player) => {
       if (player.personId === Number(this.props.match.params.playerId)) {
@@ -113,6 +114,7 @@ class Player extends Component {
 
     this.setState({ playerInTeam });
   }
+  */
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.playerInTeam !== nextState.playerInTeam) {

@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { browserHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { deletePlayer } from '../redux/actions';
 
+
 class SavedPlayers extends Component {
   static propTypes = {
     team: PropTypes.array.isRequired,
     deletePlayer: PropTypes.func,
+    history: PropTypes.object,
   }
 
   static defaultProps = {
@@ -28,7 +29,7 @@ class SavedPlayers extends Component {
   }
 
   viewPlayer(playerId) {
-    browserHistory.push(`/player/${playerId}`);
+    this.props.history.push(`/player/${playerId}`);
   }
 
   render() {

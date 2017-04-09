@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-
+import { scatteredShots } from '../shots/displayShots';
 import '../styles/styles.css';
 
 /* eslint-disable import/prefer-default-export */
@@ -231,88 +231,8 @@ export class CourtHeatmap extends Component {
       elements[i].parentNode.removeChild(elements[i]);
     }
 
-    this.displayShots(gameData);
+    scatteredShots(gameData);
     this.setState({ selectedGame });
-  }
-
-  /**
-   * Display shots in d3 here
-   *
-   * @param {number[][]} shots
-   *
-   * @memberOf CourtHeatmap
-   */
-  displayShots(shots) {
-    const svg = d3.select(document.getElementById('svg-court'));
-    // const dataset = shots.map(shot => [`${shot.locX}`, `${shot.locY}`]);
-    // filter dataset into scored and not scored
-    const scoredShots = [];
-    const missedShots = [];
-
-    shots.forEach((shot) => {
-      let seconds = shot.secondsRemaining;
-      if (seconds < 10) {
-        seconds = `0${seconds}`;
-      }
-      if (shot.eventType === 'Made Shot') {
-        scoredShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.period} - ${shot.minutesRemaining}:${seconds}`]);
-      } else {
-        missedShots.push([`${shot.locX}`, `${shot.locY}`, `Q${shot.period} - ${shot.minutesRemaining}:${seconds}`]);
-      }
-    });
-
-    const div = d3.select('body')
-      .append('div')
-      .attr('class', 'tooltip')
-      .style('opacity', 0);
-
-    svg.selectAll('#shot-point circle')
-      .data(scoredShots)
-      .enter()
-      .append('circle')
-      .classed('shot-point', true)
-      .attr('cx', d => d[0])
-      .attr('cy', d => d[1])
-      .attr('r', () => 4)
-      .attr('stroke', 'green')
-      .attr('fill', 'green')
-      .on('mouseover', (d) => {
-        div.transition()
-          .duration(200)
-          .style('opacity', 0.9);
-        div.html(`${d[2]} left`)
-          .style('top', `${event.pageY - 10}px`)
-          .style('left', `${event.pageX + 10}px`);
-      })
-      .on('mouseout', () => {
-        div.transition()
-          .duration(500)
-          .style('opacity', 0);
-      });
-
-    svg.selectAll('#shot-point circle')
-      .data(missedShots)
-      .enter()
-      .append('circle')
-      .classed('shot-point', true)
-      .attr('cx', d => d[0])
-      .attr('cy', d => d[1])
-      .attr('r', () => 4)
-      .attr('stroke', 'red')
-      .attr('fill', 'red')
-      .on('mouseover', (d) => {
-        div.transition()
-          .duration(200)
-          .style('opacity', 0.9);
-        div.html(`${d[2]} left`)
-          .style('top', `${event.pageY - 10}px`)
-          .style('left', `${event.pageX + 10}px`);
-      })
-      .on('mouseout', () => {
-        div.transition()
-          .duration(500)
-          .style('opacity', 0);
-      });
   }
 
   /**

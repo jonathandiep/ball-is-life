@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { persistStore, autoRehydrate } from 'redux-persist';
 
@@ -22,26 +22,9 @@ const history = createBrowserHistory();
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history}>
+    <BrowserRouter history={history}>
       <App />
-    </Router>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root'),
 );
-
-/*
-ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} />
-      </Route>
-      <Route path="/saved-players" component={SavedPlayers} />
-      <Route path="/player/:playerId" component={Player} />
-      <Route path="/teams" component={Teams} />
-      <Route path="/team/:teamId" component={Team} />
-    </Router>
-  </Provider>,
-  document.getElementById('root'),
-);
-*/
