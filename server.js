@@ -1,3 +1,4 @@
+/*
 const Koa = require('koa');
 const Router = require('koa-router');
 const cors = require('kcors');
@@ -84,8 +85,66 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
+router.get('*', async (ctx, next) => {
+  await send(ctx, `${__dirname}/build/index.html`);
+  return next();
+});
+
 app.use(async (ctx) => {
   await send(ctx, ctx.path, { root: `${__dirname}/build` });
 });
 
 app.listen(8080, () => console.log('app starting on port 8080'));
+
+*/
+// catchall route (send users to Angular frontend)
+const express = require('express');
+const nba = require('nba');
+const path = require('path');
+
+const app = express();
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
+
+const players = require('nba/data/players.json');
+
+/**
+ * Endpoint to get all basketball players
+ */
+app.get('/players', (req, res) => {
+  res.json(players);
+});
+
+/**
+ * Endpoint to grab individual player's details
+ */
+app.get('/player-details/:id', (req, res) => {
+  nba.stats.playerInfo({ PlayerID: req.params.id })
+    .then(data => res.send(data))
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(404);
+    });
+});
+
+/**
+ * Endpoint to grab a player's shooting stats
+ */
+app.get('/player-shots/:id', (req, res) => {
+  nba.stats.shots({ PlayerID: req.params.id })
+    .then(data => res.send(data))
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(404);
+    });
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/build/index.html`));
+});
+
+app.listen(8080, () => console.log('app working on port 8080'));
+
