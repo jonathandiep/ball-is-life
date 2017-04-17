@@ -52,9 +52,7 @@ class Player extends Component {
   }
 
   componentWillMount() {
-    this.setState({
-      funFact: funFacts[Math.floor(Math.random() * funFacts.length)],
-    });
+    this.setState({ funFact: funFacts[Math.floor(Math.random() * funFacts.length)] });
 
     let activePlayer = JSON.parse(localStorage.getItem('reduxPersist:activePlayer'));
     if (!isEmpty(activePlayer)) {
@@ -95,12 +93,14 @@ class Player extends Component {
         })
         .catch(err => console.error(err));
 
-      const interval = setInterval(() => {
-        if (!loading[0] && !loading[1]) {
-          this.setState({ loading: false });
-          clearInterval(interval);
-        }
-      }, 1000);
+      setTimeout(() => {
+        const interval = setInterval(() => {
+          if (!loading[0] && !loading[1]) {
+            this.setState({ loading: false });
+            clearInterval(interval);
+          }
+        }, 500);
+      }, 3000);
     }
   }
 
