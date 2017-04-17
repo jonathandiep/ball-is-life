@@ -6,9 +6,6 @@ import {
   RETRIEVE_PLAYER_STORAGE,
 } from '../actions';
 
-/**
- * TODO: add player details and player shots to current player
- */
 export default function (state = {}, action) {
   switch (action.type) {
     case SELECT_PLAYER:

@@ -13,11 +13,15 @@ export const RETRIEVE_PLAYER_STORAGE = 'RETRIEVE_PLAYER_STORAGE';
 export const SAVE_PLAYER = 'SAVE_PLAYER';
 export const DELETE_PLAYER = 'DELETE_PLAYER';
 
+/**
+ *  Below are action creators, which are functions that create actions
+ */
+
 // Gets player data from json file (will later be extracted to backend)
-export function retrievePlayers(players) {
+export function retrievePlayers(payload) {
   return {
     type: RETRIEVE_PLAYERS,
-    payload: players,
+    payload,
   };
 }
 
@@ -36,17 +40,17 @@ export function selectPlayer(player) {
   };
 }
 
-export function getPlayerDetails(data) {
+export function getPlayerDetails(payload) {
   return {
     type: GET_PLAYER_DETAILS,
-    payload: data,
+    payload,
   };
 }
 
-export function getPlayerShots(data) {
+export function getPlayerShots(payload) {
   return {
     type: GET_PLAYER_SHOTS,
-    payload: data,
+    payload,
   };
 }
 
@@ -76,3 +80,4 @@ export function deletePlayer(player) {
     payload: player,
   };
 }
+
