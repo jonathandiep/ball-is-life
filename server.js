@@ -109,6 +109,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static(`${__dirname}/public`));
+
 const players = require('nba/data/players.json');
 
 /**
