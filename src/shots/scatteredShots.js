@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-// import { hexbin } from 'd3-hexbin';
 
 /**
  * Display scattered points of the shots. Displays green dots for scored shots and red dots for missed shots
@@ -7,7 +6,7 @@ import * as d3 from 'd3';
  * @export
  * @param {any} shots: Array of shot data
  */
-export function scatteredShots(shots) {
+export default function scatteredShots(shots) {
   const svg = d3.select(document.getElementById('svg-court'));
   const scoredShots = [];
   const missedShots = [];
@@ -105,8 +104,3 @@ export function scatteredShots(shots) {
     });
 }
 
-// TODO
-export function hexbinShots(shots) {
-  // hexbin();
-  return shots;
-}

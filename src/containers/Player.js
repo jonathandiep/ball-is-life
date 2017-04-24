@@ -104,8 +104,8 @@ class Player extends Component {
     }
   }
 
-  /*
   componentWillReceiveProps(nextProps) {
+    /* eslint-disable react/prop-types */
     const playerInTeam = nextProps.team.filter((player) => {
       if (player.personId === Number(this.props.match.params.playerId)) {
         return player;
@@ -114,7 +114,6 @@ class Player extends Component {
 
     this.setState({ playerInTeam });
   }
-  */
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.playerInTeam !== nextState.playerInTeam) {
@@ -199,7 +198,7 @@ class Player extends Component {
       <div className="container">
         <div className="row">
           <PlayerDetail player={this.props.player} button={button} playerId={this.props.match.params.playerId} />
-          <CourtHeatmap games={games} />
+          <CourtHeatmap games={games} shots={this.props.player.shot_Chart_Detail} />
         </div>
       </div>
     );

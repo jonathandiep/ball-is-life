@@ -1,16 +1,17 @@
 // Make a heat map component here. Just pass data into it
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import * as d3 from 'd3';
 
 import Court from './Court';
-import { scatteredShots } from '../shots/displayShots';
+import scatteredShots from '../shots/scatteredShots';
+import { fieldGoalShots, fieldGoalAttempts } from '../shots/hexbinShots';
 import '../styles/styles.css';
 
 /* eslint-disable import/prefer-default-export */
 export class CourtHeatmap extends Component {
   static propTypes = {
     games: PropTypes.array.isRequired,
+    shots: PropTypes.array,
   }
 
   constructor(props) {
@@ -19,6 +20,8 @@ export class CourtHeatmap extends Component {
     this.state = { selectedGame: {} };
 
     this.handleChange = this.handleChange.bind(this);
+    this.fieldGoalHeatmap = this.fieldGoalHeatmap.bind(this);
+    this.shotsTaken = this.shotsTaken.bind(this);
   }
 
   /*
@@ -35,36 +38,68 @@ export class CourtHeatmap extends Component {
   }
   */
 
+  /**
+   * Converts the NBA location data into the location that it will display in d3. Also strips out
+   * the unnecessary data
+   *
+   * @param {any} shotData
+   * @returns Object
+   *
+   * @memberOf CourtHeatmap
+   */
+  convertPoints(shotData) {
+    let { locX, locY } = shotData;
+    const { eventType, period, minutesRemaining, secondsRemaining } = shotData;
+    if (locX < 0) {
+      locX = Math.abs(locX) + 250;
+    } else {
+      locX = 250 - locX;
+    }
+
+    locY = 415 - locY;
+
+    return {
+      eventType,
+      locX,
+      locY,
+      period,
+      minutesRemaining,
+      secondsRemaining,
+    };
+  }
+
+  clearCourt() {
+    const scatteredPoints = document.getElementsByClassName('shot-point');
+    for (let i = scatteredPoints.length - 1; i >= 0; i--) {
+      scatteredPoints[i].parentNode.removeChild(scatteredPoints[i]);
+    }
+
+    const hexbins = document.getElementsByClassName('hexbin');
+    for (let i = hexbins.length - 1; i >= 0; i--) {
+      hexbins[i].parentNode.removeChild(hexbins[i]);
+    }
+  }
+
   handleChange(event) {
     const selectedGame = this.props.games[event.target.value];
-    const gameData = selectedGame.shotData.map((shot) => {
-      let { locX, locY } = shot;
-      const { eventType, period, minutesRemaining, secondsRemaining } = shot;
-      if (locX < 0) {
-        locX = Math.abs(locX) + 250;
-      } else {
-        locX = 250 - locX;
-      }
+    const gameData = selectedGame.shotData.map(shot => this.convertPoints(shot));
 
-      locY = 415 - locY;
-
-      return {
-        eventType,
-        locX,
-        locY,
-        period,
-        minutesRemaining,
-        secondsRemaining,
-      };
-    });
-
-    const elements = document.getElementsByClassName('shot-point');
-    for (let i = elements.length - 1; i >= 0; i--) {
-      elements[i].parentNode.removeChild(elements[i]);
-    }
+    this.clearCourt();
 
     scatteredShots(gameData);
     this.setState({ selectedGame });
+  }
+
+  fieldGoalHeatmap() {
+    this.clearCourt();
+    const shotData = this.props.shots.map(shot => this.convertPoints(shot));
+    fieldGoalShots(shotData);
+  }
+
+  shotsTaken() {
+    this.clearCourt();
+    const shotData = this.props.shots.map(shot => this.convertPoints(shot));
+    fieldGoalAttempts(shotData);
   }
 
   /**
@@ -94,6 +129,8 @@ export class CourtHeatmap extends Component {
           <option>Select A Game...</option>
           {options}
         </select>
+        <a onClick={this.fieldGoalHeatmap}>View 2016-2017 Field Goal Heatmap</a><br />
+        <a onClick={this.shotsTaken}>View Heatmap of shots attempted</a>
       </div>
     );
   }

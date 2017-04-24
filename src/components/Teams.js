@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 const teams = require('nba/data/teams.json');
 
 export default class Teams extends Component {
-  // console.log(teams);
-  // filter teams before getting displayed;
   constructor(props) {
     super(props);
 
@@ -19,7 +17,6 @@ export default class Teams extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.teams !== nextState.teams) {
-      console.log('componentShouldUpdate');
       return true;
     }
 
@@ -27,13 +24,11 @@ export default class Teams extends Component {
   }
 
   handleChange(event) {
-    console.log(`event: ${event.target.value}`);
     this.sortTeams(event.target.value);
     this.forceUpdate();
   }
 
   sortTeams(type) {
-    console.log(`sortTeams: ${type}`);
     switch (type) {
       case 'team-ascending': {
         return teams.sort((a, b) => {
