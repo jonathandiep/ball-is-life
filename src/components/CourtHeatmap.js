@@ -105,7 +105,7 @@ export class CourtHeatmap extends Component {
   /**
    * Dropdown of a player's games
    *
-   * @returns React Element
+   * @returns React Element ghjghjghhghghjgjggkg
    *
    * @memberOf CourtHeatmap
    */
@@ -129,8 +129,8 @@ export class CourtHeatmap extends Component {
           <option>Select A Game...</option>
           {options}
         </select>
-        <a onClick={this.fieldGoalHeatmap}>View 2016-2017 Field Goal Heatmap</a><br />
-        <a onClick={this.shotsTaken}>View Heatmap of shots attempted</a>
+        <a onClick={this.fieldGoalHeatmap} className="heatmap-link">View 2016-2017 Field Goal Heatmap</a><br />
+        <a onClick={this.shotsTaken} className="heatmap-link">View Heatmap of shots attempted</a>
       </div>
     );
   }

@@ -15,20 +15,14 @@ function App() {
     <div>
       <nav className="navbar navbar-light bg-faded">
         <Link className="navbar-brand" to="/">
-          <img src={logo} alt="logo" width="30" height="30" />
+          <img src={logo} alt="logo" width="30" height="30" className="d-inline-block align-top" />
           Ball is Life
         </Link>
-        <ul className="nav">
-          <li className="nav-item">
-            <Link to="/" className="nav-link">Home</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/saved-players" className="nav-link">Saved Players</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/teams" className="nav-link">NBA Teams</Link>
-          </li>
-        </ul>
+        <div className="nav">
+          <Link to="/" className="nav-item nav-link">Home</Link>
+          <Link to="/saved-players" className="nav-item nav-link">Saved Players</Link>
+          <Link to="/teams" className="nav-item nav-link">NBA Teams</Link>
+        </div>
       </nav>
       <div className="container">
         <Route exact path="/" component={Home} />

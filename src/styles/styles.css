@@ -18,3 +18,11 @@ div.tooltip {
 .card {
   width: 325px;
 }
+
+.heatmap-link {
+  cursor: pointer;
+}
+
+.heatmap-link:hover {
+  font-weight: bold;
+}

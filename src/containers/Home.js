@@ -62,7 +62,7 @@ class Home extends Component {
   render() {
     const playersList = this.state.results.map(player =>
       <div key={player.playerId} onClick={() => this.props.selectPlayer(player)}>
-        <Link to={`/player/${player.playerId}`}><li>{player.fullName}</li></Link>
+        <Link to={`/player/${player.playerId}`}><li className="list-inline-item">{player.fullName}</li></Link>
       </div>,
     );
 
@@ -78,7 +78,7 @@ class Home extends Component {
                 onChange={this.onChange}
               />
               <div>
-                <ul>
+                <ul className="list-inline">
                   {playersList}
                 </ul>
               </div>

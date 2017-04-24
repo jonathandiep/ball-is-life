@@ -61,6 +61,7 @@ export function fieldGoalShots(shots) {
     .classed('hexbin', true)
     .attr('transform', d => `translate(${d.x},${d.y})`)
     .attr('d', hexbin.hexagon())
+    .attr('stroke-width', '2px')
     .attr('fill', (d) => {
       const shotsData = calculateFieldGoal(d);
       return color(shotsData.scored / (shotsData.scored + shotsData.missed));
@@ -110,6 +111,7 @@ export function fieldGoalAttempts(shots) {
     .classed('hexbin', true)
     .attr('transform', d => `translate(${d.x},${d.y})`)
     .attr('d', hexbin.hexagon())
+    .attr('stroke-width', '2px')
     .attr('fill', d => color(d.length))
     .attr('fill-opacity', 0.8)
     .on('mouseover', (d) => {
